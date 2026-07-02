@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>原青 MASIAL！職感未來式｜滿意度問卷</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#F23D9E;
+    --pink-deep:#D81E83;
+    --blue:#076fb8;
+    --blue-deep:#054d80;
+    --red:#E2222E;
+    --gold:#F6C23E;
+    --teal:#1FB6A6;
+    --cream:#FBF3EA;
+    --ink:#15131A;
+    --line:6px;
+    --radius:18px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    font-family:"Noto Sans TC",sans-serif;
+    color:var(--ink);
+    background:var(--blue);
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  .display{font-family:"Archivo Black","Noto Sans TC",sans-serif;}
+
+  /* ---------- background ---------- */
+  .app-bg{
+    position:fixed; inset:0; z-index:0;
+    background:var(--blue);
+  }
+  .sparkle-layer{position:absolute; inset:0; transition:transform .35s ease-out; will-change:transform;}
+  .sparkle{
+    position:absolute;
+    width:26px; height:26px;
+    background:var(--red);
+    clip-path:polygon(50% 0%,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0% 50%,39% 39%);
+    opacity:.6;
+    z-index:1;
+    transform:scale(var(--s,1)) rotate(var(--r,0deg));
+    animation:twinkle 3.2s ease-in-out infinite;
+  }
+  @keyframes twinkle{0%,100%{opacity:.35;} 50%{opacity:.9;}}
+
+  /* ---------- layout ---------- */
+  .stage{
+    position:relative; z-index:2;
+    min-height:100vh;
+    display:flex; align-items:flex-start; justify-content:center;
+    padding:28px 16px 60px;
+  }
+  .window{
+    width:100%; max-width:640px;
+    background:var(--cream);
+    border:4px solid var(--ink);
+    border-radius:var(--radius);
+    box-shadow:10px 10px 0 var(--ink);
+    overflow:hidden;
+    animation:pop-in .45s cubic-bezier(.2,.9,.25,1.2);
+  }
+  @keyframes pop-in{from{opacity:0; transform:translateY(14px) scale(.98);} to{opacity:1; transform:none;}}
+
+  .titlebar{
+    background:var(--pink);
+    border-bottom:4px solid var(--ink);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 14px;
+  }
+  .titlebar .label{
+    font-size:13px; font-weight:700; color:#fff;
+    letter-spacing:.04em;
+    display:flex; align-items:center; gap:8px;
+    min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+    flex:1 1 auto;
+  }
+  .titlebar .label .dot{width:8px;height:8px;background:#fff;border-radius:50%;display:inline-block;}
+  .traffic{display:flex; gap:8px; flex-shrink:0;}
+  .traffic span{
+    width:20px; height:20px; border:3px solid var(--ink); border-radius:5px;
+    display:flex; align-items:center; justify-content:center;
+    transition:transform .18s;
+  }
+  .traffic span:hover{transform:rotate(-10deg) scale(1.18);}
+  .traffic span:nth-child(1){background:var(--red);}
+  .traffic span:nth-child(2){background:#FFF3D6;}
+  .traffic span:nth-child(3){background:var(--red);}
+  .traffic span:nth-child(3)::after{content:"✕"; color:var(--ink); font-size:13px; font-weight:900; line-height:1;}
+
+  .body-area{padding:26px 22px 24px;}
+
+  /* progress */
+  .progress{
+    display:flex; gap:7px; justify-content:center; margin-bottom:22px;
+  }
+  .progress i{
+    width:16px; height:16px;
+    background:#fff; border:3px solid var(--ink);
+    transform:rotate(45deg);
+    transition:background .25s, transform .25s;
+  }
+  .progress i.done{background:var(--teal);}
+  .progress i.active{background:var(--gold); transform:rotate(45deg) scale(1.25);}
+
+  .step-eyebrow{
+    font-size:12px; font-weight:700; color:var(--pink-deep);
+    letter-spacing:.12em; margin:0 0 6px;
+  }
+  h2.step-title{
+    font-size:22px; margin:0 0 4px; line-height:1.35;
+  }
+  p.step-desc{font-size:13.5px; color:#5a5468; margin:0 0 20px; line-height:1.6;}
+
+  /* ---- hero (intro) ---- */
+  .hero{text-align:center;}
+  .hero .kicker{
+    font-size:13px; font-weight:700; letter-spacing:.08em; color:var(--blue-deep);
+    margin-bottom:10px;
+  }
+  .hero h1{
+    margin:0 0 4px; line-height:1.15;
+  }
+  .hero h1 .line1{display:block; font-size:30px; color:var(--ink);}
+  .hero h1 .line2{
+    display:block; font-size:30px;
+    color:var(--blue);
+    -webkit-text-stroke:1.5px var(--ink);
+  }
+  .hero h1 .line3{display:block; font-size:42px; margin-top:4px;}
+  .hero h1 .line3 .a{color:var(--red); -webkit-text-stroke:1.5px var(--ink);}
+  .hero h1 .line3 .b{color:var(--ink);}
+  .hero p.sub{font-size:14px; color:#5a5468; margin:14px 0 26px; line-height:1.7;}
+  .hero .badge-row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:26px;}
+  .logo-img{
+    width:100%; max-width:340px; height:auto;
+    margin:6px auto 4px; display:block;
+    filter:drop-shadow(3px 4px 0 rgba(0,0,0,.0));
+  }
+  .titlebar .logo-mini{height:18px; width:auto; display:block;}
+  .pillchip{
+    border:3px solid var(--ink); border-radius:999px; padding:6px 14px;
+    font-size:12px; font-weight:700; background:#fff;
+  }
+  .pillchip.teal{background:var(--teal); color:#fff;}
+  .pillchip.gold{background:var(--gold);}
+  .pillchip.pink{background:var(--pink); color:#fff;}
+
+  /* ---- form bits ---- */
+  .field{margin-bottom:22px;}
+  .field-label{
+    display:block; font-weight:700; font-size:14.5px; margin-bottom:10px;
+  }
+  .field-label .req{color:var(--red); margin-left:3px;}
+  .hint{font-size:12px; color:#897f9c; margin:-4px 0 10px;}
+
+  .choice-grid{display:flex; flex-wrap:wrap; gap:9px;}
+  .choice-btn{
+    border:3px solid var(--ink); background:#fff; border-radius:12px;
+    padding:9px 14px; font-size:13.5px; font-weight:600; cursor:pointer;
+    transition:transform .12s, box-shadow .12s, background .15s;
+    box-shadow:3px 3px 0 var(--ink);
+  }
+  .choice-btn:hover{transform:translateY(-2px);}
+  .choice-btn:active{transform:translateY(1px); box-shadow:1px 1px 0 var(--ink);}
+  .choice-btn.selected{background:var(--blue); color:#fff; animation:selectPop .25s ease;}
+  .choice-btn.selected.alt{background:var(--teal);}
+
+  select, input[type=text], textarea{
+    width:100%; font-family:inherit; font-size:14.5px;
+    border:3px solid var(--ink); border-radius:12px; padding:11px 13px;
+    background:#fff; color:var(--ink);
+    box-shadow:3px 3px 0 var(--ink);
+  }
+  select:focus, input:focus, textarea:focus{outline:3px solid var(--gold); outline-offset:1px;}
+  textarea{resize:vertical; min-height:90px;}
+
+  /* rating block */
+  .rating-card{
+    background:#fff; border:3px solid var(--ink); border-radius:14px;
+    padding:13px 14px; margin-bottom:13px;
+    box-shadow:3px 3px 0 rgba(21,19,26,.18);
+  }
+  .rating-card .q{font-size:14px; font-weight:700; margin-bottom:10px;}
+  .scale-row{display:flex; gap:6px; flex-wrap:wrap;}
+  .scale-btn{
+    flex:1 1 18%; min-width:54px;
+    border:2.5px solid var(--ink); border-radius:10px; background:#fff;
+    font-size:11.5px; font-weight:700; line-height:1.25; padding:8px 2px;
+    cursor:pointer; text-align:center; transition:all .15s;
+  }
+  .scale-btn.sel{animation:selectPop .25s ease;}
+  .scale-btn[data-v="5"].sel{background:var(--blue); color:#fff;}
+  .scale-btn[data-v="4"].sel{background:var(--teal); color:#fff;}
+  .scale-btn[data-v="3"].sel{background:var(--gold); color:var(--ink);}
+  .scale-btn[data-v="2"].sel{background:#F08A3C; color:#fff;}
+  .scale-btn[data-v="1"].sel{background:var(--red); color:#fff;}
+  @keyframes selectPop{0%{transform:scale(1);} 50%{transform:scale(1.12);} 100%{transform:scale(1);}}
+  .rating-card.missing{outline:2px dashed var(--red); outline-offset:3px;}
+
+  .check-row{display:flex; align-items:flex-start; gap:10px; padding:10px 4px; border-bottom:2px dashed #e3d9cf;}
+  .check-row:last-child{border-bottom:none;}
+  .check-row input{width:18px; height:18px; margin-top:3px; accent-color:var(--blue);}
+  .check-row label{font-size:14px; line-height:1.5; cursor:pointer;}
+  .other-input{margin-top:8px; margin-left:28px; display:none;}
+  .other-input.show{display:block;}
+
+  /* nav buttons */
+  .nav-row{display:flex; justify-content:space-between; gap:12px; margin-top:8px;}
+  .btn{
+    border:3px solid var(--ink); border-radius:12px;
+    font-family:inherit; font-weight:700; font-size:14.5px;
+    padding:12px 20px; cursor:pointer;
+    box-shadow:4px 4px 0 var(--ink);
+    transition:transform .12s, box-shadow .12s;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn:active{transform:translateY(2px); box-shadow:1px 1px 0 var(--ink);}
+  .btn:disabled{opacity:.45; cursor:not-allowed; transform:none;}
+  .btn-primary{background:var(--blue); color:#fff;}
+  .btn-ghost{background:#fff; color:var(--ink);}
+  .btn-wide{width:100%;}
+  .btn-start{background:var(--red); color:#fff; font-size:16px; padding:15px 24px;}
+
+  .error-msg{
+    background:#FFE3E3; border:2px solid var(--red); color:#8a1620;
+    font-size:12.5px; border-radius:10px; padding:9px 12px; margin-top:10px;
+  }
+
+  /* success */
+  .success-wrap{text-align:center; padding:14px 0 6px;}
+  .success-stamp{
+    width:96px; height:96px; margin:0 auto 18px;
+    border:5px solid var(--ink); border-radius:50%;
+    background:var(--teal); display:flex; align-items:center; justify-content:center;
+    color:#fff; font-size:46px; font-weight:900;
+    transform:rotate(-8deg);
+    box-shadow:5px 5px 0 var(--ink);
+  }
+  .success-wrap h2{font-size:21px; margin:0 0 8px;}
+  .success-wrap p{font-size:13.5px; color:#5a5468; line-height:1.7;}
+
+  .footer-note{
+    text-align:center; font-size:11px; color:rgba(255,255,255,.75);
+    margin-top:18px; position:relative; z-index:2;
+  }
+
+  .spinner{
+    display:inline-block; width:14px; height:14px; border:2.5px solid #fff;
+    border-top-color:transparent; border-radius:50%;
+    animation:spin .7s linear infinite; vertical-align:-2px; margin-right:6px;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  @media (max-width:420px){
+    .logo-img{max-width:260px;}
+    .scale-btn{flex:1 1 28%; font-size:11px;}
+    .body-area{padding:22px 16px 20px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .sparkle, .window{animation:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="app-bg" id="appBg"></div>
+
+<div class="stage">
+  <div class="window">
+    <div class="titlebar">
+      <span class="label"><img src="logo_暑工.svg" alt="" class="logo-mini">滿意度問卷</span>
+      <div class="traffic"><span></span><span></span><span></span></div>
+    </div>
+    <div class="body-area" id="bodyArea">
+      <!-- JS injects screens here -->
+    </div>
+  </div>
+</div>
+
+<div class="footer-note">115 年度原住民族青年暑期工讀教育訓練　原住民族委員會</div>
+
+<script>
+/* ====================================================================
+   CONFIG — 請將下方網址換成你部署好的 Google Apps Script 網路應用程式網址
+   （Apps Script 編輯器 → 部署 → 新增部署作業 → 類型選「網頁應用程式」）
+   ==================================================================== */
+const GAS_ENDPOINT = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
+
+/* ---------------- data model ---------------- */
+const SCALE = ["非常滿意","滿意","普通","不滿意","非常不滿意"];
+
+const SECTION4 = [
+  "活動事前聯繫","活動報到服務／場域指引","工作人員服務態度與協助","接駁交通安排",
+  "上課場域環境","餐點安排與口味","手冊與文宣品設計"
+];
+const SECTION5 = [
+  "課程期待程度","課程師資專業性","課程內容豐富性","課程時間安排","從中獲取專業知識"
+];
+const SECTION6 = [
+  "部落文化導覽","部落手作體驗","產業職人分享","體驗場域環境","部落餐食規劃","從中獲取專業知識"
+];
+
+const IDENTITY_OPTIONS = ["高中職","大專院校","研究生"];
+const TRIBE_OPTIONS = [
+  "阿美族","排灣族","泰雅族","布農族","太魯閣族","卡那卡那富族","拉阿魯哇族","賽德克族",
+  "鄒族","卑南族","魯凱族","賽夏族","雅美族（達悟族）","邵族","噶瑪蘭族","撒奇萊雅族"
+];
+const IMPRESSION_OPTIONS = [
+  "政策課程（某堂特定課程／師資）","部落文化導覽與手作體驗","在地特色餐食安排","與工作人員或其他學員的互動交流"
+];
+
+const state = {
+  step:0,
+  region:"",
+  identity:"",
+  tribe:"",
+  serviceArea:"",
+  r4:{}, r5:{}, r6:{},
+  impression:[], impressionOther:"",
+  feedback:"",
+};
+
+const totalDataSteps = 5; // step 1~5 shown in progress dots
+
+/* ---------------- render helpers ---------------- */
+const bodyArea = document.getElementById("bodyArea");
+
+function progressDots(activeIndex){
+  let html = '<div class="progress">';
+  for(let i=1;i<=totalDataSteps;i++){
+    let cls = "";
+    if(i < activeIndex) cls = "done";
+    else if(i === activeIndex) cls = "active";
+    html += `<i class="${cls}"></i>`;
+  }
+  html += '</div>';
+  return html;
+}
+
+function scaleRow(groupKey, item, idx){
+  const current = state[groupKey][idx];
+  let html = `<div class="scale-row">`;
+  SCALE.forEach((label, i)=>{
+    const v = 5 - i; // 非常滿意=5 ... 非常不滿意=1
+    const sel = current === v ? "sel" : "";
+    html += `<button type="button" class="scale-btn ${sel}" data-v="${v}" onclick="setRating('${groupKey}',${idx},${v})">${label}</button>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+function ratingCard(groupKey, item, idx){
+  const missing = state[groupKey][idx] === undefined;
+  return `<div class="rating-card ${missing ? '' : ''}" id="${groupKey}-card-${idx}">
+    <div class="q">${item}</div>
+    ${scaleRow(groupKey, item, idx)}
+  </div>`;
+}
+
+window.setRating = function(groupKey, idx, v){
+  state[groupKey][idx] = v;
+  render();
+};
+
+/* ---------------- screens ---------------- */
+function screenIntro(){
+  const canStart = !!state.region;
+  return `
+  <div class="hero">
+    <div class="kicker">115 年度原住民族青年暑期工讀教育訓練</div>
+    <img src="logo_暑工.svg" alt="原青 MASIAL！職感未來式" class="logo-img">
+    <p class="sub">感謝你參與本次活動！想聽聽你最真實的想法 — 你的回饋將成為下一屆活動進步的養分。<br>填答約需 3-5 分鐘，所有回答僅供活動檢討使用。</p>
+
+    <div class="field" style="margin-bottom:18px; text-align:left;">
+      <span class="field-label">請先選擇您參加的場次<span class="req">＊</span></span>
+      <select onchange="state.region=this.value; render();" style="font-size:14.5px;">
+        <option value="" ${state.region===""?"selected":""} disabled>請選擇場次</option>
+        <option value="台東區：7/16(三)–7/17(四)" ${state.region==="台東區：7/16(三)–7/17(四)"?"selected":""}>台東區：7/16(三)–7/17(四)</option>
+        <option value="北區：7/20(日)–7/21(一)" ${state.region==="北區：7/20(日)–7/21(一)"?"selected":""}>北區：7/20(日)–7/21(一)</option>
+        <option value="宜花區：7/28(一)–7/29(二)" ${state.region==="宜花區：7/28(一)–7/29(二)"?"selected":""}>宜花區：7/28(一)–7/29(二)</option>
+        <option value="中區：8/6(三)–8/7(四)" ${state.region==="中區：8/6(三)–8/7(四)"?"selected":""}>中區：8/6(三)–8/7(四)</option>
+        <option value="南區：8/11(一)–8/12(二)" ${state.region==="南區：8/11(一)–8/12(二)"?"selected":""}>南區：8/11(一)–8/12(二)</option>
+      </select>
+    </div>
+
+    <div class="badge-row">
+      <span class="pillchip pink">5 個步驟</span>
+      <span class="pillchip teal">約 3-5 分鐘</span>
+      <span class="pillchip gold">匿名填寫</span>
+    </div>
+    <button class="btn btn-start btn-wide" onclick="goStep(1)" ${canStart?"":"disabled"} style="${canStart?"":"opacity:.45; cursor:not-allowed; transform:none; box-shadow:4px 4px 0 var(--ink);"}">開始填寫 →</button>
+    ${!canStart ? `<p style="font-size:12px; color:#897f9c; margin-top:10px; text-align:center;">請先選擇場次才能開始填寫</p>` : ""}
+  </div>`;
+}
+
+function screenStep1(){
+  return `
+  ${progressDots(1)}
+  <div class="step-eyebrow">STEP 1 / 5</div>
+  <h2 class="step-title">基本資料</h2>
+  <p class="step-desc">先讓我們認識你一下。</p>
+
+  <div class="field">
+    <span class="field-label">您的身分<span class="req">＊</span></span>
+    <div class="choice-grid">
+      ${IDENTITY_OPTIONS.map(opt=>`<button type="button" class="choice-btn ${state.identity===opt?'selected':''}" onclick="pickIdentity('${opt}')">${opt}</button>`).join("")}
+    </div>
+  </div>
+
+  <div class="field">
+    <span class="field-label">原住民族族別<span class="req">＊</span></span>
+    <select onchange="state.tribe=this.value; render();">
+      <option value="" ${state.tribe===""?"selected":""}>請選擇</option>
+      ${TRIBE_OPTIONS.map(t=>`<option value="${t}" ${state.tribe===t?"selected":""}>${t}</option>`).join("")}
+    </select>
+  </div>
+
+  <div class="field">
+    <span class="field-label">服務地區<span class="req">＊</span></span>
+    <div class="hint">提示範例：如台東縣金峰鄉</div>
+    <input type="text" placeholder="請輸入您的服務地區" value="${state.serviceArea}" oninput="state.serviceArea=this.value">
+  </div>
+
+  ${navRow(1)}
+  `;
+}
+
+function stepRatingScreen(stepNum, title, groupKey, items){
+  let cards = items.map((item,idx)=>ratingCard(groupKey,item,idx)).join("");
+  return `
+  ${progressDots(stepNum)}
+  <div class="step-eyebrow">STEP ${stepNum} / 5</div>
+  <h2 class="step-title">${title}</h2>
+  <p class="step-desc">請依照五點量表為以下項目評分。</p>
+  ${cards}
+  ${navRow(stepNum)}
+  `;
+}
+
+function screenStep5(){
+  return `
+  ${progressDots(5)}
+  <div class="step-eyebrow">STEP 5 / 5</div>
+  <h2 class="step-title">心聲與回饋</h2>
+  <p class="step-desc">最後幾句話，幫助我們把下一次辦得更好。</p>
+
+  <div class="field">
+    <span class="field-label">在這次活動中，讓您印象最深刻的是什麼？<span class="req">＊</span></span>
+    <div class="hint">可複選，若無符合選項亦可於「其他」自由填寫</div>
+    <div class="rating-card" style="padding:4px 10px;">
+      ${IMPRESSION_OPTIONS.map((opt,i)=>`
+        <div class="check-row">
+          <input type="checkbox" id="imp${i}" ${state.impression.includes(opt)?"checked":""} onchange="toggleImpression('${opt}')">
+          <label for="imp${i}">${opt}</label>
+        </div>`).join("")}
+      <div class="check-row" style="border-bottom:none;">
+        <input type="checkbox" id="impOther" ${state.impression.includes("其他")?"checked":""} onchange="toggleImpression('其他')">
+        <label for="impOther">其他：</label>
+      </div>
+      ${state.impression.includes("其他") ? `<div class="other-input show"><input type="text" placeholder="請輸入" value="${state.impressionOther}" oninput="state.impressionOther=this.value"></div>` : ""}
+    </div>
+  </div>
+
+  <div class="field">
+    <span class="field-label">對於活動整體流程或安排，您有什麼覺得可以改善的地方嗎？</span>
+    <div class="hint">選填</div>
+    <textarea placeholder="歡迎自由分享您的想法..." oninput="state.feedback=this.value">${state.feedback}</textarea>
+  </div>
+
+  <div id="errBox"></div>
+  ${navRow(5, true)}
+  `;
+}
+
+function screenSubmitting(){
+  return `<div class="success-wrap">
+    <div class="success-stamp"><span class="spinner" style="width:22px;height:22px;border-width:3px;"></span></div>
+    <h2>正在送出問卷...</h2>
+    <p>請稍候，馬上就好。</p>
+  </div>`;
+}
+
+function screenSuccess(){
+  return `<div class="success-wrap">
+    <div class="success-stamp">✓</div>
+    <h2>感謝您的填答！</h2>
+    <p>您的寶貴意見已成功送出，<br>祝福未來的路 masial（順利）！</p>
+    ${state.region ? `<div style="margin-top:10px;"><span class="pillchip pink" style="font-size:12px;">${state.region}</span></div>` : ""}
+  </div>`;
+}
+
+function screenError(msg){
+  return `<div class="success-wrap">
+    <div class="success-stamp" style="background:var(--red);">!</div>
+    <h2>送出時發生問題</h2>
+    <p>${msg || "請檢查網路連線後再試一次。"}</p>
+    <button class="btn btn-primary" style="margin-top:14px;" onclick="submitSurvey()">重新送出</button>
+  </div>`;
+}
+
+function navRow(stepNum, isLast){
+  return `
+  <div class="nav-row">
+    <button class="btn btn-ghost" onclick="goStep(${stepNum-1})">← 上一步</button>
+    ${isLast
+      ? `<button class="btn btn-primary" id="submitBtn" onclick="trySubmit()">送出問卷 ✓</button>`
+      : `<button class="btn btn-primary" onclick="tryNext(${stepNum})">下一步 →</button>`
+    }
+  </div>`;
+}
+
+/* ---------------- navigation / validation ---------------- */
+window.pickIdentity = function(opt){
+  state.identity = opt;
+  render();
+};
+window.toggleImpression = function(opt){
+  const i = state.impression.indexOf(opt);
+  if(i>-1) state.impression.splice(i,1);
+  else state.impression.push(opt);
+  render();
+};
+
+window.goStep = function(n){
+  state.step = n;
+  render();
+  window.scrollTo({top:0, behavior:"smooth"});
+};
+
+function validateStep1(){
+  if(!state.identity) return "請選擇您的身分";
+  if(!state.tribe) return "請選擇原住民族族別";
+  if(!state.serviceArea.trim()) return "請填寫服務地區";
+  return null;
+}
+function validateRatings(groupKey, items){
+  for(let i=0;i<items.length;i++){
+    if(state[groupKey][i] === undefined) return i;
+  }
+  return -1;
+}
+
+window.tryNext = function(stepNum){
+  if(stepNum===1){
+    const err = validateStep1();
+    if(err){ flashError(err); return; }
+  }
+  if(stepNum===2){
+    const missing = validateRatings("r4", SECTION4);
+    if(missing>-1){ flashMissing("r4", missing); return; }
+  }
+  if(stepNum===3){
+    const missing = validateRatings("r5", SECTION5);
+    if(missing>-1){ flashMissing("r5", missing); return; }
+  }
+  if(stepNum===4){
+    const missing = validateRatings("r6", SECTION6);
+    if(missing>-1){ flashMissing("r6", missing); return; }
+  }
+  goStep(stepNum+1);
+};
+
+window.trySubmit = function(){
+  if(state.impression.length===0){
+    document.getElementById("errBox").innerHTML = `<div class="error-msg">請至少選擇一項印象最深刻的選項</div>`;
+    return;
+  }
+  if(state.impression.includes("其他") && !state.impressionOther.trim()){
+    document.getElementById("errBox").innerHTML = `<div class="error-msg">請填寫「其他」的內容</div>`;
+    return;
+  }
+  submitSurvey();
+};
+
+function flashError(msg){
+  let box = document.getElementById("inlineErr");
+  if(!box){
+    bodyArea.insertAdjacentHTML("beforeend", `<div class="error-msg" id="inlineErr"></div>`);
+    box = document.getElementById("inlineErr");
+  }
+  box.textContent = msg;
+  box.scrollIntoView({behavior:"smooth", block:"center"});
+}
+function flashMissing(groupKey, idx){
+  const card = document.getElementById(`${groupKey}-card-${idx}`);
+  if(card){
+    card.classList.add("missing");
+    card.scrollIntoView({behavior:"smooth", block:"center"});
+    setTimeout(()=>card.classList.remove("missing"), 1800);
+  }
+}
+
+/* ---------------- submit to GAS ---------------- */
+function buildPayload(){
+  const rows4 = {}, rows5 = {}, rows6 = {};
+  SECTION4.forEach((label,i)=>rows4[label]=state.r4[i]);
+  SECTION5.forEach((label,i)=>rows5[label]=state.r5[i]);
+  SECTION6.forEach((label,i)=>rows6[label]=state.r6[i]);
+  return {
+    timestamp: new Date().toISOString(),
+    region: state.region,
+    identity: state.identity,
+    tribe: state.tribe,
+    serviceArea: state.serviceArea,
+    section4_admin: rows4,
+    section5_policy: rows5,
+    section6_tribal: rows6,
+    impression: state.impression.includes("其他")
+      ? state.impression.filter(o=>o!=="其他").concat(`其他：${state.impressionOther}`)
+      : state.impression,
+    feedback: state.feedback
+  };
+}
+
+window.submitSurvey = function(){
+  state.step = "submitting";
+  render();
+  const payload = buildPayload();
+
+  fetch(GAS_ENDPOINT, {
+    method:"POST",
+    mode:"no-cors", // Apps Script 預設不回傳 CORS 標頭，no-cors 可送出但讀不到回應內容
+    headers:{ "Content-Type":"text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  }).then(()=>{
+    state.step = "success";
+    render();
+  }).catch((err)=>{
+    state.step = "error";
+    state.errMsg = err.message;
+    render();
+  });
+};
+
+/* ---------------- master render ---------------- */
+function render(){
+  let html = "";
+  if(state.step === 0) html = screenIntro();
+  else if(state.step === 1) html = screenStep1();
+  else if(state.step === 2) html = stepRatingScreen(2, "行政庶務與環境服務", "r4", SECTION4);
+  else if(state.step === 3) html = stepRatingScreen(3, "教育訓練課程：原住民族政策", "r5", SECTION5);
+  else if(state.step === 4) html = stepRatingScreen(4, "部落參訪體驗", "r6", SECTION6);
+  else if(state.step === 5) html = screenStep5();
+  else if(state.step === "submitting") html = screenSubmitting();
+  else if(state.step === "success") html = screenSuccess();
+  else if(state.step === "error") html = screenError(state.errMsg);
+  bodyArea.innerHTML = html;
+}
+
+/* ---------------- sparkle decorations ---------------- */
+function placeSparkles(){
+  const bg = document.getElementById("appBg");
+  const layer = document.createElement("div");
+  layer.className = "sparkle-layer";
+  layer.id = "sparkleLayer";
+  bg.appendChild(layer);
+
+  const positions = [
+    [4,10],[10,70],[88,18],[92,75],[50,4],[3,42],[95,46]
+  ];
+  positions.forEach(([x,y],i)=>{
+    const s = document.createElement("div");
+    s.className = "sparkle";
+    s.style.left = x+"%";
+    s.style.top = y+"%";
+    s.style.setProperty("--s", (0.6 + Math.random()*0.8).toFixed(2));
+    s.style.setProperty("--r", (Math.random()*30)+"deg");
+    s.style.animationDelay = (Math.random()*3)+"s";
+    layer.appendChild(s);
+  });
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const finePointer = window.matchMedia("(pointer: fine)").matches;
+  if(!reduceMotion && finePointer){
+    document.addEventListener("mousemove", (e)=>{
+      const dx = (e.clientX / window.innerWidth - 0.5) * 2;
+      const dy = (e.clientY / window.innerHeight - 0.5) * 2;
+      layer.style.transform = `translate(${dx*12}px, ${dy*12}px)`;
+    });
+  }
+}
+
+placeSparkles();
+render();
+</script>
+</body>
+</html>
