@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>原青 MASIAL！職感未來式｜現場簽到</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#F23D9E;
+    --pink-deep:#D81E83;
+    --blue:#076fb8;
+    --blue-deep:#054d80;
+    --red:#E2222E;
+    --gold:#F6C23E;
+    --teal:#1FB6A6;
+    --orange:#F08A3C;
+    --cream:#FBF3EA;
+    --ink:#15131A;
+    --radius:18px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    font-family:"Noto Sans TC",sans-serif;
+    color:var(--ink);
+    background:var(--blue);
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  .display{font-family:"Archivo Black","Noto Sans TC",sans-serif;}
+
+  /* ---------- background ---------- */
+  .app-bg{position:fixed; inset:0; z-index:0; background:var(--blue);}
+  .sparkle-layer{position:absolute; inset:0; transition:transform .35s ease-out; will-change:transform;}
+  .sparkle{
+    position:absolute; width:26px; height:26px; background:var(--red);
+    clip-path:polygon(50% 0%,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0% 50%,39% 39%);
+    opacity:.6; z-index:1;
+    transform:scale(var(--s,1)) rotate(var(--r,0deg));
+    animation:twinkle 3.2s ease-in-out infinite;
+  }
+  @keyframes twinkle{0%,100%{opacity:.35;} 50%{opacity:.9;}}
+
+  .stage{
+    position:relative; z-index:2;
+    min-height:100vh;
+    display:flex; align-items:flex-start; justify-content:center;
+    padding:28px 16px 60px;
+  }
+  .window{
+    width:100%; max-width:460px;
+    background:var(--cream);
+    border:4px solid var(--ink);
+    border-radius:var(--radius);
+    box-shadow:10px 10px 0 var(--ink);
+    overflow:hidden;
+    animation:pop-in .45s cubic-bezier(.2,.9,.25,1.2);
+  }
+  @keyframes pop-in{from{opacity:0; transform:translateY(14px) scale(.98);} to{opacity:1; transform:none;}}
+
+  .titlebar{
+    background:var(--pink);
+    border-bottom:4px solid var(--ink);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 14px;
+  }
+  .titlebar .label{
+    font-size:13px; font-weight:700; color:#fff;
+    display:flex; align-items:center; gap:8px;
+    min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+    flex:1 1 auto;
+  }
+  .titlebar img.logo-mini{height:18px; width:auto; display:block;}
+  .traffic{display:flex; gap:8px; flex-shrink:0;}
+  .traffic span{
+    width:20px; height:20px; border:3px solid var(--ink); border-radius:5px;
+    display:flex; align-items:center; justify-content:center;
+    transition:transform .18s;
+  }
+  .traffic span:hover{transform:rotate(-10deg) scale(1.18);}
+  .traffic span:nth-child(1){background:var(--red);}
+  .traffic span:nth-child(2){background:#FFF3D6;}
+  .traffic span:nth-child(3){background:var(--red);}
+  .traffic span:nth-child(3)::after{content:"✕"; color:var(--ink); font-size:13px; font-weight:900; line-height:1;}
+
+  .body-area{padding:28px 24px 26px;}
+
+  /* hero */
+  .hero{text-align:center; margin-bottom:18px;}
+  .logo-img{width:100%; max-width:280px; height:auto; margin:0 auto 10px; display:block;}
+  /* region select */
+  .region-wrap{margin:10px auto 0; max-width:280px;}
+  .region-wrap select{
+    font-size:14px; font-weight:700; text-align:center;
+    background:var(--red); color:#fff; border-color:var(--ink);
+    box-shadow:3px 3px 0 var(--ink); border-radius:999px;
+    padding:7px 36px 7px 16px; cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23fff'%3E%3Cpath d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 14px center; background-size:14px;
+  }
+  .region-wrap select option{background:#fff; color:var(--ink);}
+  .region-wrap select:invalid{color:rgba(255,255,255,.65);}
+
+  /* event-chip kept for success meta display */
+  .event-chip{
+    display:inline-block; border:3px solid var(--ink); border-radius:999px;
+    background:var(--red); color:#fff; font-weight:700; font-size:13px;
+    padding:6px 16px; box-shadow:3px 3px 0 var(--ink);
+  }
+  .hero .kicker{font-size:12px; font-weight:700; color:var(--blue-deep); letter-spacing:.08em; margin:10px 0 0;}
+
+  /* form */
+  .field{margin-bottom:18px;}
+  .field-label{display:block; font-weight:700; font-size:14px; margin-bottom:7px;}
+  .field-label .req{color:var(--red); margin-left:2px;}
+  select, input[type=text]{
+    width:100%; font-family:inherit; font-size:15px;
+    border:3px solid var(--ink); border-radius:12px; padding:12px 13px;
+    background:#fff; color:var(--ink);
+    box-shadow:3px 3px 0 var(--ink);
+    appearance:none; -webkit-appearance:none;
+  }
+  select{
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2315131A'%3E%3Cpath d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 14px center; background-size:16px;
+    padding-right:38px;
+  }
+  select:focus, input:focus{outline:3px solid var(--gold); outline-offset:1px;}
+  select:invalid{color:#999;}
+
+  .btn{
+    border:3px solid var(--ink); border-radius:12px;
+    font-family:inherit; font-weight:700; font-size:16px;
+    padding:14px 20px; cursor:pointer;
+    box-shadow:4px 4px 0 var(--ink);
+    transition:transform .12s, box-shadow .12s;
+    width:100%;
+    display:flex; align-items:center; justify-content:center; gap:10px;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn:active{transform:translateY(2px); box-shadow:1px 1px 0 var(--ink);}
+  .btn:disabled{opacity:.7; cursor:not-allowed; transform:none;}
+  .btn-primary{background:var(--red); color:#fff;}
+
+  .error-msg{
+    background:#FFE3E3; border:2px solid var(--red); color:#8a1620;
+    font-size:12.5px; border-radius:10px; padding:10px 13px; margin-top:12px; text-align:center;
+  }
+
+  .spinner{
+    display:inline-block; width:18px; height:18px; border:3px solid rgba(255,255,255,.5);
+    border-top-color:#fff; border-radius:50%;
+    animation:spin .7s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* success */
+  .success-wrap{text-align:center; padding:10px 0 4px;}
+  .success-stamp{
+    width:88px; height:88px; margin:0 auto 16px;
+    border:5px solid var(--ink); border-radius:50%;
+    background:var(--teal); display:flex; align-items:center; justify-content:center;
+    color:#fff; font-size:42px; font-weight:900;
+    transform:rotate(-8deg);
+    box-shadow:5px 5px 0 var(--ink);
+    animation:stampPop .4s ease;
+  }
+  @keyframes stampPop{0%{transform:rotate(-8deg) scale(.4);} 60%{transform:rotate(-8deg) scale(1.1);} 100%{transform:rotate(-8deg) scale(1);}}
+  .success-wrap h2{font-size:21px; margin:0 0 8px;}
+  .success-wrap p{font-size:13.5px; color:#5a5468; line-height:1.7; margin:0 0 6px;}
+  .success-meta{
+    background:#fff; border:3px solid var(--ink); border-radius:14px;
+    padding:14px 16px; margin:16px 0; text-align:left; font-size:13.5px;
+    box-shadow:3px 3px 0 rgba(21,19,26,.15);
+  }
+  .success-meta div{display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px dashed #e3d9cf; gap:10px;}
+  .success-meta div:last-child{border-bottom:none;}
+  .success-meta span:first-child{color:#897f9c; flex-shrink:0;}
+  .success-meta span:last-child{font-weight:700; text-align:right;}
+
+  .footer-note{position:relative; z-index:2; text-align:center; font-size:11px; color:rgba(255,255,255,.75); margin-top:18px;}
+  .hidden{display:none !important;}
+
+  /* ── PIN 畫面 ── */
+  .pin-wrap{text-align:center; padding:4px 0 8px;}
+  .pin-wrap .logo-img{max-width:220px; margin-bottom:14px;}
+  .pin-wrap h2{font-size:17px; margin:0 0 4px;}
+  .pin-wrap p{font-size:13px; color:#5a5468; margin:0 0 20px; line-height:1.6;}
+  .pin-dots{display:flex; gap:10px; justify-content:center; margin-bottom:20px;}
+  .pin-dots span{
+    width:16px; height:16px; border-radius:50%;
+    border:3px solid var(--ink); background:#fff;
+    transition:background .15s;
+  }
+  .pin-dots span.filled{background:var(--blue);}
+  .pin-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; max-width:240px; margin:0 auto 16px;}
+  .pin-key{
+    border:3px solid var(--ink); border-radius:12px; background:#fff;
+    font-family:inherit; font-size:20px; font-weight:700;
+    padding:14px 0; cursor:pointer;
+    box-shadow:3px 3px 0 var(--ink);
+    transition:transform .1s, box-shadow .1s;
+  }
+  .pin-key:hover{transform:translateY(-2px);}
+  .pin-key:active{transform:translateY(2px); box-shadow:1px 1px 0 var(--ink);}
+  .pin-key.del{background:var(--gold);}
+  .pin-key.wide{grid-column:span 3; font-size:15px;}
+  .pin-error{
+    background:#FFE3E3; border:2px solid var(--red); color:#8a1620;
+    font-size:12.5px; border-radius:10px; padding:9px 12px;
+    animation:shake .35s ease;
+  }
+  @keyframes shake{0%,100%{transform:translateX(0);} 25%{transform:translateX(-6px);} 75%{transform:translateX(6px);}}
+
+  @media (prefers-reduced-motion: reduce){
+    .sparkle, .window, .success-stamp{animation:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="app-bg" id="appBg"></div>
+
+<div class="stage">
+  <div class="window">
+    <div class="titlebar">
+      <span class="label"><img src="logo_暑工.svg" alt="" class="logo-mini">現場簽到</span>
+      <div class="traffic"><span></span><span></span><span></span></div>
+    </div>
+    <div class="body-area">
+
+      <!-- 無效金鑰畫面 (方案A 擋截) -->
+      <div id="blockedScreen" class="hidden" style="text-align:center; padding:20px 0;">
+        <div style="font-size:42px; margin-bottom:14px;">🔒</div>
+        <h2 style="font-size:18px; margin:0 0 8px;">存取受限</h2>
+        <p style="font-size:13px; color:#5a5468;">請透過活動提供的專屬連結或 QR Code 進入本系統。</p>
+      </div>
+
+      <!-- PIN 輸入畫面 (方案B) -->
+      <div id="pinScreen" class="hidden">
+        <div class="pin-wrap">
+          <img src="logo_暑工.svg" alt="" class="logo-img">
+          <h2>請輸入簽到密碼</h2>
+          <p>請向現場工作人員索取<br>當日四位數簽到密碼</p>
+          <div class="pin-dots" id="pinDots">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div class="pin-grid" id="pinGrid">
+            <button class="pin-key" onclick="pinPress('1')">1</button>
+            <button class="pin-key" onclick="pinPress('2')">2</button>
+            <button class="pin-key" onclick="pinPress('3')">3</button>
+            <button class="pin-key" onclick="pinPress('4')">4</button>
+            <button class="pin-key" onclick="pinPress('5')">5</button>
+            <button class="pin-key" onclick="pinPress('6')">6</button>
+            <button class="pin-key" onclick="pinPress('7')">7</button>
+            <button class="pin-key" onclick="pinPress('8')">8</button>
+            <button class="pin-key" onclick="pinPress('9')">9</button>
+            <button class="pin-key del" onclick="pinDel()">⌫</button>
+            <button class="pin-key" onclick="pinPress('0')">0</button>
+            <button class="pin-key" onclick="pinClear()" style="font-size:13px;">清除</button>
+          </div>
+          <div id="pinError" class="hidden pin-error">密碼錯誤，請重新輸入</div>
+        </div>
+      </div>
+
+      <div id="formScreen" class="hidden">
+        <div class="hero">
+          <img src="logo_暑工.svg" alt="原青 MASIAL！職感未來式" class="logo-img">
+          <div class="region-wrap" id="regionWrap">
+            <select id="regionSelect" required>
+              <option value="" disabled selected>請選擇場次</option>
+              <option value="台東區：7/16(三)–7/17(四)">台東區：7/16(三)–7/17(四)</option>
+              <option value="北區：7/20(日)–7/21(一)">北區：7/20(日)–7/21(一)</option>
+              <option value="宜花區：7/28(一)–7/29(二)">宜花區：7/28(一)–7/29(二)</option>
+              <option value="中區：8/6(三)–8/7(四)">中區：8/6(三)–8/7(四)</option>
+              <option value="南區：8/11(一)–8/12(二)">南區：8/11(一)–8/12(二)</option>
+            </select>
+          </div>
+          <div class="kicker">115 年度原住民族青年暑期工讀教育訓練</div>
+        </div>
+
+        <form id="checkInForm">
+          <div class="field">
+            <span class="field-label">姓名<span class="req">＊</span></span>
+            <input type="text" id="name" name="name" required placeholder="請輸入您的真實姓名">
+          </div>
+
+          <div class="field">
+            <span class="field-label">服務地區<span class="req">＊</span></span>
+            <input type="text" id="area" name="area" required placeholder="例如：台中市、南投縣等...">
+          </div>
+
+          <div class="field">
+            <span class="field-label">族別<span class="req">＊</span></span>
+            <select id="tribe" name="tribe" required>
+              <option value="" disabled selected>請選擇您的族別</option>
+              <option value="阿美族">阿美族 (Amis)</option>
+              <option value="排灣族">排灣族 (Paiwan)</option>
+              <option value="泰雅族">泰雅族 (Atayal)</option>
+              <option value="布農族">布農族 (Bunun)</option>
+              <option value="卑南族">卑南族 (Puyuma)</option>
+              <option value="魯凱族">魯凱族 (Rukai)</option>
+              <option value="鄒族">鄒族 (Tsou)</option>
+              <option value="賽夏族">賽夏族 (Saisiyat)</option>
+              <option value="雅美族(達悟族)">雅美族/達悟族 (Yami/Tao)</option>
+              <option value="邵族">邵族 (Thao)</option>
+              <option value="噶瑪蘭族">噶瑪蘭族 (Kavalan)</option>
+              <option value="太魯閣族">太魯閣族 (Truku)</option>
+              <option value="撒奇萊雅族">撒奇萊雅族 (Sakizaya)</option>
+              <option value="賽德克族">賽德克族 (Seediq)</option>
+              <option value="拉阿魯哇族">拉阿魯哇族 (Hla'alua)</option>
+              <option value="卡那卡那富族">卡那卡那富族 (Kanakanavu)</option>
+            </select>
+          </div>
+
+          <button type="submit" id="submitBtn" class="btn btn-primary">
+            <span id="btnText">簽到！</span>
+            <span id="loadingIcon" class="spinner hidden"></span>
+          </button>
+
+          <p id="errorMsg" class="error-msg hidden">發生錯誤，請稍後再試或聯繫工作人員。</p>
+        </form>
+      </div>
+
+      <div id="successScreen" class="hidden">
+        <div class="success-wrap">
+          <div class="success-stamp">✓</div>
+          <h2>簽到成功！</h2>
+          <p>您的報到紀錄已送出，歡迎參加本次教育訓練。</p>
+          <div class="success-meta" id="successMeta"></div>
+          <button class="btn btn-primary" onclick="location.reload()">返回重填 ↺</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="footer-note">115 年度原住民族青年暑期工讀教育訓練　原住民族委員會</div>
+
+<script>
+/* ====================================================================
+   ▼ CONFIG：依活動需要修改以下三個設定值 ▼
+   ==================================================================== */
+
+// 【方案 A】URL 金鑰 — 網址需加上 ?key=此處設定的值 才能進入
+// 範例網址：https://yoursite.com/checkin.html?key=masial2025
+const URL_KEY = "masial2025";
+
+// 【方案 B】四位數 PIN 碼 — 現場工作人員口頭告知學員
+const PIN_CODE = "1629";
+
+// GAS 後台網址（部署後替換）
+const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbzmnrULxbVKZitrs9NeXwN9uxuStd2wUNuzLViJXfQogB9Mq6gDhKCLilbUSsCqtbov/exec";
+
+/* ==================================================================== */
+
+/* ── 方案 A：URL 金鑰驗證 ── */
+const urlKey = new URLSearchParams(window.location.search).get("key");
+if(urlKey !== URL_KEY){
+  document.getElementById("blockedScreen").classList.remove("hidden");
+} else {
+  document.getElementById("pinScreen").classList.remove("hidden");
+}
+
+/* ── 方案 B：PIN 輸入邏輯 ── */
+let pinInput = "";
+
+window.pinPress = function(digit){
+  if(pinInput.length >= 4) return;
+  pinInput += digit;
+  updatePinDots();
+  if(pinInput.length === 4) setTimeout(checkPin, 120);
+};
+window.pinDel = function(){
+  pinInput = pinInput.slice(0, -1);
+  updatePinDots();
+};
+window.pinClear = function(){
+  pinInput = "";
+  updatePinDots();
+};
+
+function updatePinDots(){
+  document.querySelectorAll("#pinDots span").forEach((s, i)=>{
+    s.classList.toggle("filled", i < pinInput.length);
+  });
+}
+
+function checkPin(){
+  if(pinInput === PIN_CODE){
+    document.getElementById("pinScreen").classList.add("hidden");
+    document.getElementById("formScreen").classList.remove("hidden");
+  } else {
+    pinInput = "";
+    updatePinDots();
+    const err = document.getElementById("pinError");
+    err.classList.remove("hidden");
+    // 重新觸發 shake 動畫
+    err.style.animation = "none";
+    err.offsetHeight; // reflow
+    err.style.animation = "";
+    setTimeout(()=> err.classList.add("hidden"), 2000);
+  }
+}
+
+/* ── 簽到表單邏輯 ── */
+const regionSelect = document.getElementById("regionSelect");
+
+const form = document.getElementById("checkInForm");
+const submitBtn = document.getElementById("submitBtn");
+const btnText = document.getElementById("btnText");
+const loadingIcon = document.getElementById("loadingIcon");
+const formScreen = document.getElementById("formScreen");
+const successScreen = document.getElementById("successScreen");
+const errorMsg = document.getElementById("errorMsg");
+
+form.addEventListener("submit", (e)=>{
+  e.preventDefault();
+  errorMsg.classList.add("hidden");
+
+  if(GAS_ENDPOINT.includes("YOUR_DEPLOYMENT_ID")){
+    alert("請先在 HTML 檔案中把 GAS_ENDPOINT 換成你的 Google Apps Script 網址！");
+    return;
+  }
+
+  const eventLabel = regionSelect.value;
+  if(!eventLabel){
+    errorMsg.textContent = "請先選擇您的場次。";
+    errorMsg.classList.remove("hidden");
+    regionSelect.focus();
+    return;
+  }
+
+  const name = document.getElementById("name").value.trim();
+  const area = document.getElementById("area").value.trim();
+  const tribe = document.getElementById("tribe").value;
+
+  submitBtn.disabled = true;
+  btnText.textContent = "處理中...";
+  loadingIcon.classList.remove("hidden");
+
+  const payload = {
+    timestamp: new Date().toISOString(),
+    event: eventLabel,
+    name, area, tribe
+  };
+
+  fetch(GAS_ENDPOINT, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  }).then(()=>{
+    document.getElementById("successMeta").innerHTML = `
+      <div><span>場次</span><span>${escapeHtml(eventLabel)}</span></div>
+      <div><span>姓名</span><span>${escapeHtml(name)}</span></div>
+      <div><span>服務地區</span><span>${escapeHtml(area)}</span></div>
+      <div><span>族別</span><span>${escapeHtml(tribe)}</span></div>
+      <div><span>簽到時間</span><span>${new Date().toLocaleString("zh-TW",{hour12:false})}</span></div>
+    `;
+    formScreen.classList.add("hidden");
+    successScreen.classList.remove("hidden");
+  }).catch((err)=>{
+    console.error("簽到送出失敗：", err);
+    submitBtn.disabled = false;
+    btnText.textContent = "簽到！";
+    loadingIcon.classList.add("hidden");
+    errorMsg.textContent = "發生錯誤，請稍後再試或聯繫工作人員。";
+    errorMsg.classList.remove("hidden");
+  });
+});
+
+function escapeHtml(str){
+  const d = document.createElement("div");
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+/* ---------------- sparkle decorations ---------------- */
+function placeSparkles(){
+  const bg = document.getElementById("appBg");
+  const layer = document.createElement("div");
+  layer.className = "sparkle-layer";
+  bg.appendChild(layer);
+
+  const positions = [[5,9],[10,72],[88,16],[92,76],[50,4],[3,44],[95,48]];
+  positions.forEach(([x,y])=>{
+    const s = document.createElement("div");
+    s.className = "sparkle";
+    s.style.left = x+"%";
+    s.style.top = y+"%";
+    s.style.setProperty("--s", (0.6 + Math.random()*0.8).toFixed(2));
+    s.style.setProperty("--r", (Math.random()*30)+"deg");
+    s.style.animationDelay = (Math.random()*3)+"s";
+    layer.appendChild(s);
+  });
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const finePointer = window.matchMedia("(pointer: fine)").matches;
+  if(!reduceMotion && finePointer){
+    document.addEventListener("mousemove", (e)=>{
+      const dx = (e.clientX / window.innerWidth - 0.5) * 2;
+      const dy = (e.clientY / window.innerHeight - 0.5) * 2;
+      layer.style.transform = `translate(${dx*12}px, ${dy*12}px)`;
+    });
+  }
+}
+placeSparkles();
+</script>
+</body>
+</html>
