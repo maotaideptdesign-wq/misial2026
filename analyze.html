@@ -259,6 +259,42 @@
   }
   @keyframes spin{to{transform:rotate(360deg);}}
 
+
+  /* ── PIN 畫面 ── */
+  .pin-wrap{text-align:center; padding:4px 0 10px;}
+  .pin-wrap .logo-img{max-width:220px; margin-bottom:12px;}
+  .pin-wrap h2{font-size:17px; margin:0 0 4px;}
+  .pin-wrap p{font-size:13px; color:#5a5468; margin:0 0 18px; line-height:1.6;}
+  .pin-region{
+    display:inline-block; margin-bottom:16px;
+    border:3px solid var(--ink); border-radius:999px;
+    background:var(--teal); color:#fff; font-weight:700; font-size:13px;
+    padding:5px 16px; box-shadow:3px 3px 0 var(--ink);
+  }
+  .pin-dots{display:flex; gap:10px; justify-content:center; margin-bottom:18px;}
+  .pin-dots span{
+    width:16px; height:16px; border-radius:50%;
+    border:3px solid var(--ink); background:#fff;
+    transition:background .15s;
+  }
+  .pin-dots span.filled{background:var(--blue);}
+  .pin-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; max-width:240px; margin:0 auto 14px;}
+  .pin-key{
+    border:3px solid var(--ink); border-radius:12px; background:#fff;
+    font-family:inherit; font-size:20px; font-weight:700;
+    padding:14px 0; cursor:pointer;
+    box-shadow:3px 3px 0 var(--ink);
+    transition:transform .1s, box-shadow .1s;
+  }
+  .pin-key:hover{transform:translateY(-2px);}
+  .pin-key:active{transform:translateY(2px); box-shadow:1px 1px 0 var(--ink);}
+  .pin-key.del{background:var(--gold);}
+  .pin-error{
+    background:#FFE3E3; border:2px solid var(--red); color:#8a1620;
+    font-size:12.5px; border-radius:10px; padding:9px 12px;
+    animation:shake .35s ease;
+  }
+  @keyframes shake{0%,100%{transform:translateX(0);} 25%{transform:translateX(-6px);} 75%{transform:translateX(6px);}}
   @media (max-width:420px){
     .logo-img{max-width:260px;}
     .scale-btn{flex:1 1 28%; font-size:11px;}
@@ -289,10 +325,22 @@
 
 <script>
 /* ====================================================================
-   CONFIG — 請將下方網址換成你部署好的 Google Apps Script 網路應用程式網址
-   （Apps Script 編輯器 → 部署 → 新增部署作業 → 類型選「網頁應用程式」）
+   ▼ CONFIG：依活動需要修改以下設定值 ▼
    ==================================================================== */
-const GAS_ENDPOINT = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
+
+const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbzwckfNp3LihxWrSc7nMSzIOKdz3rDEZHCuIUkwBDUvpTppy7ebK40cWco0zGyD1Nr9Nw/exec";
+
+// 五區 PIN 碼對應場次（PIN→場次名稱）
+// 場次名稱同時作為 GAS 後台的工作表名稱
+const PIN_MAP = {
+  "1629": "台東區：7/16(三)–7/17(四)",
+  "2021": "北區：7/20(日)–7/21(一)",
+  "2829": "宜花區：7/28(一)–7/29(二)",
+  "0607": "中區：8/6(三)–8/7(四)",
+  "1112": "南區：8/11(一)–8/12(二)",
+};
+
+/* ==================================================================== */
 
 /* ---------------- data model ---------------- */
 const SCALE = ["非常滿意","滿意","普通","不滿意","非常不滿意"];
@@ -372,32 +420,18 @@ window.setRating = function(groupKey, idx, v){
 
 /* ---------------- screens ---------------- */
 function screenIntro(){
-  const canStart = !!state.region;
   return `
   <div class="hero">
     <div class="kicker">115 年度原住民族青年暑期工讀教育訓練</div>
     <img src="logo_暑工.svg" alt="原青 MASIAL！職感未來式" class="logo-img">
+    <div class="pin-region">${state.region}</div>
     <p class="sub">感謝你參與本次活動！想聽聽你最真實的想法 — 你的回饋將成為下一屆活動進步的養分。<br>填答約需 3-5 分鐘，所有回答僅供活動檢討使用。</p>
-
-    <div class="field" style="margin-bottom:18px; text-align:left;">
-      <span class="field-label">請先選擇您參加的場次<span class="req">＊</span></span>
-      <select onchange="state.region=this.value; render();" style="font-size:14.5px;">
-        <option value="" ${state.region===""?"selected":""} disabled>請選擇場次</option>
-        <option value="台東區：7/16(三)–7/17(四)" ${state.region==="台東區：7/16(三)–7/17(四)"?"selected":""}>台東區：7/16(三)–7/17(四)</option>
-        <option value="北區：7/20(日)–7/21(一)" ${state.region==="北區：7/20(日)–7/21(一)"?"selected":""}>北區：7/20(日)–7/21(一)</option>
-        <option value="宜花區：7/28(一)–7/29(二)" ${state.region==="宜花區：7/28(一)–7/29(二)"?"selected":""}>宜花區：7/28(一)–7/29(二)</option>
-        <option value="中區：8/6(三)–8/7(四)" ${state.region==="中區：8/6(三)–8/7(四)"?"selected":""}>中區：8/6(三)–8/7(四)</option>
-        <option value="南區：8/11(一)–8/12(二)" ${state.region==="南區：8/11(一)–8/12(二)"?"selected":""}>南區：8/11(一)–8/12(二)</option>
-      </select>
-    </div>
-
     <div class="badge-row">
       <span class="pillchip pink">5 個步驟</span>
       <span class="pillchip teal">約 3-5 分鐘</span>
       <span class="pillchip gold">匿名填寫</span>
     </div>
-    <button class="btn btn-start btn-wide" onclick="goStep(1)" ${canStart?"":"disabled"} style="${canStart?"":"opacity:.45; cursor:not-allowed; transform:none; box-shadow:4px 4px 0 var(--ink);"}">開始填寫 →</button>
-    ${!canStart ? `<p style="font-size:12px; color:#897f9c; margin-top:10px; text-align:center;">請先選擇場次才能開始填寫</p>` : ""}
+    <button class="btn btn-start btn-wide" onclick="goStep(1)">開始填寫 →</button>
   </div>`;
 }
 
@@ -655,6 +689,66 @@ function render(){
   bodyArea.innerHTML = html;
 }
 
+/* ---------------- PIN 畫面（五區各自 PIN 碼）---------------- */
+function renderPinScreen(){
+  let pinInput = "";
+  const bodyArea = document.getElementById("bodyArea");
+
+  function draw(){
+    const regionLabel = pinInput.length === 4 ? (PIN_MAP[pinInput] || null) : null;
+    bodyArea.innerHTML = `
+      <div class="pin-wrap">
+        <img src="logo_暑工.svg" alt="" class="logo-img">
+        <h2>請輸入場次密碼</h2>
+        <p>請向現場工作人員索取您場次的四位數密碼</p>
+        <div class="pin-dots">
+          <span class="${pinInput.length>0?'filled':''}"></span>
+          <span class="${pinInput.length>1?'filled':''}"></span>
+          <span class="${pinInput.length>2?'filled':''}"></span>
+          <span class="${pinInput.length>3?'filled':''}"></span>
+        </div>
+        <div class="pin-grid">
+          ${[1,2,3,4,5,6,7,8,9].map(n=>`<button class="pin-key" onclick="pinPress('${n}')">${n}</button>`).join('')}
+          <button class="pin-key del" onclick="pinDel()">⌫</button>
+          <button class="pin-key" onclick="pinPress('0')">0</button>
+          <button class="pin-key del" onclick="pinClear()" style="font-size:13px;">清除</button>
+        </div>
+        <div id="pinError" class="hidden pin-error">密碼錯誤，請重新輸入</div>
+      </div>
+    `;
+  }
+
+  window.pinPress = function(digit){
+    if(pinInput.length >= 4) return;
+    pinInput += digit;
+    draw();
+    if(pinInput.length === 4) setTimeout(checkPin, 120);
+  };
+  window.pinDel = function(){
+    pinInput = pinInput.slice(0,-1); draw();
+  };
+  window.pinClear = function(){
+    pinInput = ""; draw();
+  };
+
+  function checkPin(){
+    const region = PIN_MAP[pinInput];
+    if(region){
+      state.region = region;
+      render(); // 進入問卷開場畫面
+    } else {
+      pinInput = "";
+      draw();
+      const err = document.getElementById("pinError");
+      err.classList.remove("hidden");
+      err.style.animation="none"; err.offsetHeight; err.style.animation="";
+      setTimeout(()=>err.classList.add("hidden"), 2000);
+    }
+  }
+
+  draw();
+}
+
 /* ---------------- sparkle decorations ---------------- */
 function placeSparkles(){
   const bg = document.getElementById("appBg");
@@ -689,7 +783,7 @@ function placeSparkles(){
 }
 
 placeSparkles();
-render();
+renderPinScreen();   // 開場顯示 PIN 畫面，不走 render()
 </script>
 </body>
 </html>
