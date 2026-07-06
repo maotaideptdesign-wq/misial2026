@@ -265,6 +265,7 @@
   .pin-wrap .logo-img{max-width:220px; margin-bottom:12px;}
   .pin-wrap h2{font-size:17px; margin:0 0 4px;}
   .pin-wrap p{font-size:13px; color:#5a5468; margin:0 0 18px; line-height:1.6;}
+  .venue-info-sv{font-size:12px;color:#5a5468;margin:4px 0 6px;line-height:1.7;}
   .pin-region{
     display:inline-block; margin-bottom:16px;
     border:3px solid var(--ink); border-radius:999px;
@@ -338,6 +339,15 @@ const PIN_MAP = {
   "2829": "宜花區：7/28(一)–7/29(二)",
   "0607": "中區：8/6(三)–8/7(四)",
   "1112": "南區：8/11(一)–8/12(二)",
+};
+
+// 五區地點資訊
+const VENUE_MAP_SV = {
+  "台東區：7/16(三)–7/17(四)": { hotel:"娜魯灣酒店", tribe:"達魯瑪克部落" },
+  "北區：7/20(日)–7/21(一)":   { hotel:"渴望會館", tribe:"復興區" },
+  "宜花區：7/28(一)–7/29(二)": { hotel:"花蓮福容飯店", tribe:"秀林鄉" },
+  "中區：8/6(三)–8/7(四)":     { hotel:"嘉義耐斯王子飯店", tribe:"達那伊谷" },
+  "南區：8/11(一)–8/12(二)":   { hotel:"屏東同合農科", tribe:"霧台鄉" },
 };
 
 /* ==================================================================== */
@@ -425,6 +435,7 @@ function screenIntro(){
     <div class="kicker">115 年度原住民族青年暑期工讀教育訓練</div>
     <img src="logo_暑工.svg" alt="原青 MASIAL！職感未來式" class="logo-img">
     <div class="pin-region">${state.region}</div>
+    ${(()=>{ const v=VENUE_MAP_SV[state.region]; return v ? `<div class="venue-info-sv">🏨 ${v.hotel}　🌿 ${v.tribe}</div>` : ''; })()}
     <p class="sub">感謝你參與本次活動！想聽聽你最真實的想法 — 你的回饋將成為下一屆活動進步的養分。<br>填答約需 3-5 分鐘，所有回答僅供活動檢討使用。</p>
     <div class="badge-row">
       <span class="pillchip pink">5 個步驟</span>
