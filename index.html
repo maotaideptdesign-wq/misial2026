@@ -59,34 +59,10 @@ body{min-height:100vh;font-family:"Noto Sans TC",sans-serif;color:var(--ink);bac
 .pin-error{background:#FFE3E3;border:2px solid var(--red);color:#8a1620;font-size:12.5px;border-radius:10px;padding:9px 12px;animation:shake .35s ease;}
 @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
 
-/* roster panel */
-.roster-panel{border:3px dashed var(--ink);border-radius:14px;background:#fff;padding:14px 16px;margin-bottom:18px;}
-.roster-panel.loaded{border-style:solid;border-color:var(--teal);background:#f0fdf9;}
-.roster-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;}
-.roster-head h3{font-size:14px;font-weight:700;margin:0;}
-.roster-status{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;border:2px solid var(--ink);}
-.roster-status.ok{background:var(--teal);color:#fff;}
-.roster-status.empty{background:#fff;color:#897f9c;}
 .btn-upload{border:2.5px solid var(--ink);border-radius:10px;background:var(--gold);font-family:inherit;font-weight:700;font-size:12.5px;padding:7px 14px;cursor:pointer;box-shadow:2px 2px 0 var(--ink);transition:transform .1s;}
-.btn-upload:hover{transform:translateY(-1px);}
-.roster-hint{font-size:11.5px;color:#897f9c;line-height:1.5;margin:0;}
 
-/* name autocomplete */
+/* name field */
 .name-wrap{position:relative;}
-.suggest-list{position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:100;
-  background:#fff;border:3px solid var(--ink);border-radius:12px;box-shadow:4px 4px 0 var(--ink);
-  max-height:200px;overflow-y:auto;}
-.suggest-item{padding:10px 14px;font-size:14px;cursor:pointer;border-bottom:1px solid #f0ece6;transition:background .1s;}
-.suggest-item:last-child{border-bottom:none;}
-.suggest-item:hover,.suggest-item.active{background:#EEF5FC;}
-.suggest-item .si-name{font-weight:700;}
-.suggest-item .si-meta{font-size:11.5px;color:#897f9c;margin-top:1px;}
-
-/* roster check badge */
-.roster-check{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;font-size:12.5px;font-weight:700;margin-top:8px;}
-.roster-check.match{background:#f0fdf9;border:2px solid var(--teal);color:#0d7a64;}
-.roster-check.nomatch{background:#fffbeb;border:2px solid var(--gold);color:#7a5a00;}
-.roster-check.none{display:none;}
 
 /* form fields */
 .field{margin-bottom:16px;}
@@ -177,29 +153,12 @@ select:invalid{color:#999;}
           <div class="venue-info" id="venueInfo"></div>
           <div class="kicker">115 年度原住民族青年暑期工讀教育訓練</div>
         </div>
-
-        <!-- 名單匯入區（工作人員操作） -->
-        <div class="roster-panel" id="rosterPanel">
-          <div class="roster-head">
-            <h3>📋 名單複檢</h3>
-            <span class="roster-status empty" id="rosterStatus">未載入</span>
-          </div>
-          <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
-            <button class="btn-upload" onclick="document.getElementById('rosterFile').click()">匯入名單 CSV</button>
-            <button class="btn-upload" id="clearRosterBtn" onclick="clearRoster()" style="display:none;background:#fff;">清除名單</button>
-            <input type="file" id="rosterFile" accept=".csv" style="display:none;" onchange="loadRoster(this)">
-          </div>
-          <p class="roster-hint" id="rosterHint">匯入後，姓名欄位將顯示名單建議，並自動比對出席狀態。<br>CSV 格式：姓名（必填）、族別、服務地區（選填）</p>
-        </div>
-
         <form id="checkInForm">
           <div class="field">
             <span class="field-label">姓名<span class="req">＊</span></span>
             <div class="name-wrap">
               <input type="text" id="name" name="name" required placeholder="請輸入您的真實姓名" autocomplete="off" oninput="onNameInput()">
-              <div class="suggest-list hidden" id="suggestList"></div>
             </div>
-<!-- rosterCheck hidden - result sent to GAS only, not shown to students -->
           </div>
 
           <div class="field">
@@ -244,7 +203,6 @@ select:invalid{color:#999;}
           <div class="success-stamp">✓</div>
           <h2>簽到成功！</h2>
           <p>您的報到紀錄已送出，歡迎參加本次教育訓練。</p>
-          <div id="successBadge"></div>
           <div class="success-meta" id="successMeta"></div>
           <button class="btn btn-primary" onclick="location.reload()">返回重填 ↺</button>
         </div>
@@ -330,135 +288,6 @@ function checkPin(){
   }
 }
 
-/* ── 名單載入 ── */
-let roster = []; // [{name, tribe, area}, ...]
-
-window.loadRoster = function(input){
-  const file = input.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    try {
-      const rows = parseCSV(e.target.result);
-      if(!rows.length){ alert("CSV 檔案內容為空或格式不正確"); return; }
-      roster = rows;
-      updateRosterUI();
-    } catch(err){
-      alert("CSV 解析失敗：" + err.message);
-    }
-    input.value = "";
-  };
-  reader.readAsText(file, "utf-8");
-};
-
-function parseCSV(text){
-  // Remove BOM
-  text = text.replace(/^\uFEFF/, "");
-  const lines = text.split(/\r?\n/).filter(l => l.trim());
-  if(lines.length < 2) return [];
-  const headers = lines[0].split(",").map(h => h.trim());
-  const nameIdx  = headers.findIndex(h => h.includes("姓名") || h === "name");
-  const tribeIdx = headers.findIndex(h => h.includes("族別") || h.includes("族") || h === "tribe");
-  const areaIdx  = headers.findIndex(h => h.includes("服務地區") || h.includes("地區") || h === "area");
-  if(nameIdx === -1) throw new Error("找不到「姓名」欄位，請確認 CSV 第一列有「姓名」欄位名稱");
-  return lines.slice(1).map(line => {
-    const cols = line.split(",").map(c => c.trim().replace(/^"|"$/g,""));
-    return {
-      name:  cols[nameIdx]  || "",
-      tribe: tribeIdx  >= 0 ? (cols[tribeIdx]  || "") : "",
-      area:  areaIdx   >= 0 ? (cols[areaIdx]   || "") : "",
-    };
-  }).filter(r => r.name);
-}
-
-function updateRosterUI(){
-  const loaded = roster.length > 0;
-  const panel  = document.getElementById("rosterPanel");
-  const status = document.getElementById("rosterStatus");
-  const hint   = document.getElementById("rosterHint");
-  const clearBtn = document.getElementById("clearRosterBtn");
-  panel.classList.toggle("loaded", loaded);
-  status.textContent = loaded ? `已載入 ${roster.length} 筆` : "未載入";
-  status.className = "roster-status " + (loaded ? "ok" : "empty");
-  hint.textContent = loaded
-    ? `名單已就緒，輸入姓名時將自動顯示比對建議。`
-    : `匯入後，姓名欄位將顯示名單建議，並自動比對出席狀態。\nCSV 格式：姓名（必填）、族別、服務地區（選填）`;
-  clearBtn.style.display = loaded ? "" : "none";
-}
-
-window.clearRoster = function(){
-  roster = [];
-  updateRosterUI();
-  closeSuggest();
-  checkRoster("");
-};
-
-/* ── 姓名自動完成 ── */
-let selectedFromRoster = false;
-
-window.onNameInput = function(){
-  const val = document.getElementById("name").value;
-  selectedFromRoster = false;
-  if(roster.length === 0){ closeSuggest(); checkRoster(val); return; }
-  const matches = fuzzyMatch(val, roster);
-  if(val.length === 0 || matches.length === 0){ closeSuggest(); checkRoster(val); return; }
-  showSuggest(matches.slice(0,8));
-  checkRoster(val);
-};
-
-function fuzzyMatch(query, list){
-  if(!query) return [];
-  const q = query.toLowerCase();
-  return list.filter(r => r.name.toLowerCase().includes(q))
-    .sort((a,b) => {
-      const ai = a.name.toLowerCase().indexOf(q);
-      const bi = b.name.toLowerCase().indexOf(q);
-      return ai - bi || a.name.localeCompare(b.name,"zh");
-    });
-}
-
-function showSuggest(items){
-  const list = document.getElementById("suggestList");
-  list.innerHTML = items.map((r,i) => `
-    <div class="suggest-item" data-idx="${i}" onclick="selectSuggest(${i})">
-      <div class="si-name">${r.name}</div>
-      ${(r.tribe||r.area) ? `<div class="si-meta">${[r.tribe,r.area].filter(Boolean).join("　")}</div>` : ""}
-    </div>`).join("");
-  list.classList.remove("hidden");
-  list._items = items;
-}
-
-function closeSuggest(){
-  const list = document.getElementById("suggestList");
-  list.classList.add("hidden");
-  list.innerHTML = "";
-}
-
-window.selectSuggest = function(idx){
-  const list = document.getElementById("suggestList");
-  if(!list._items) return;
-  const r = list._items[idx];
-  document.getElementById("name").value = r.name;
-  if(r.area)  document.getElementById("area").value = r.area;
-  if(r.tribe){
-    const sel = document.getElementById("tribe");
-    for(const opt of sel.options){
-      if(opt.value === r.tribe){ sel.value = r.tribe; break; }
-    }
-  }
-  selectedFromRoster = true;
-  closeSuggest();
-  checkRoster(r.name);
-};
-
-// Close suggest on outside click
-document.addEventListener("click", e=>{
-  if(!e.target.closest(".name-wrap")) closeSuggest();
-});
-
-// checkRoster: result sent to GAS only, not displayed on student form
-function checkRoster(name){ /* silent */ }
-
 /* ── 表單送出 ── */
 const form       = document.getElementById("checkInForm");
 const submitBtn  = document.getElementById("submitBtn");
@@ -480,13 +309,6 @@ form.addEventListener("submit", e=>{
   const area  = document.getElementById("area").value.trim();
   const tribe = document.getElementById("tribe").value;
 
-  closeSuggest();
-
-  // 名單比對狀態
-  const rosterMatched = roster.length > 0
-    ? !!roster.find(r => r.name === name)
-    : null; // null = 未載入名單
-
   submitBtn.disabled = true;
   btnText.textContent = "處理中...";
   loadingIcon.classList.remove("hidden");
@@ -495,7 +317,6 @@ form.addEventListener("submit", e=>{
     timestamp: new Date().toISOString(),
     event: currentRegion,
     name, area, tribe,
-    rosterMatched: rosterMatched === null ? "未比對" : rosterMatched ? "符合" : "不符",
   };
 
   fetch(GAS_ENDPOINT, {
@@ -503,15 +324,6 @@ form.addEventListener("submit", e=>{
     headers:{"Content-Type":"text/plain;charset=utf-8"},
     body: JSON.stringify(payload)
   }).then(()=>{
-    // 成功畫面
-    const badge = document.getElementById("successBadge");
-    if(rosterMatched === true){
-      badge.innerHTML = `<div class="success-badge match">✓ 名單比對成功</div>`;
-    } else if(rosterMatched === false){
-      badge.innerHTML = `<div class="success-badge nomatch">⚠ 未在名單中</div>`;
-    } else {
-      badge.innerHTML = "";
-    }
     document.getElementById("successMeta").innerHTML = `
       <div><span>場次</span><span>${escapeHtml(currentRegion)}</span></div>
       <div><span>姓名</span><span>${escapeHtml(name)}</span></div>
