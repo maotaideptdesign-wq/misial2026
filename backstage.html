@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>原青 MASIAL！｜報到確認後台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--pink:#F23D9E;--blue:#076fb8;--red:#E2222E;--gold:#F6C23E;--teal:#1FB6A6;--orange:#F08A3C;--cream:#FBF3EA;--ink:#15131A;--radius:18px;}
+*{box-sizing:border-box;}html,body{margin:0;padding:0;}
+body{min-height:100vh;font-family:"Noto Sans TC",sans-serif;color:var(--ink);background:var(--blue);-webkit-font-smoothing:antialiased;}
+.app-bg{position:fixed;inset:0;z-index:0;background:var(--blue);}
+.sparkle-layer{position:absolute;inset:0;transition:transform .35s ease-out;will-change:transform;}
+.sparkle{position:absolute;width:22px;height:22px;background:var(--red);clip-path:polygon(50% 0%,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0% 50%,39% 39%);opacity:.5;z-index:1;transform:scale(var(--s,1)) rotate(var(--r,0deg));animation:twinkle 3.2s ease-in-out infinite;}
+@keyframes twinkle{0%,100%{opacity:.25;}50%{opacity:.75;}}
+.stage{position:relative;z-index:2;max-width:920px;margin:0 auto;padding:24px 14px 60px;}
+.window{background:var(--cream);border:4px solid var(--ink);border-radius:var(--radius);box-shadow:8px 8px 0 var(--ink);overflow:hidden;margin-bottom:22px;animation:pop-in .4s cubic-bezier(.2,.9,.25,1.2);}
+@keyframes pop-in{from{opacity:0;transform:translateY(12px) scale(.98);}to{opacity:1;transform:none;}}
+.titlebar{background:var(--pink);border-bottom:4px solid var(--ink);display:flex;align-items:center;justify-content:space-between;padding:10px 14px;}
+.titlebar .label{font-size:13px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;flex:1 1 auto;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.titlebar img{height:18px;width:auto;}
+.traffic{display:flex;gap:7px;flex-shrink:0;}
+.traffic span{width:19px;height:19px;border:3px solid var(--ink);border-radius:5px;display:flex;align-items:center;justify-content:center;transition:transform .18s;}
+.traffic span:hover{transform:rotate(-10deg) scale(1.18);}
+.traffic span:nth-child(1){background:var(--red);}
+.traffic span:nth-child(2){background:#FFF3D6;}
+.traffic span:nth-child(3){background:var(--red);}
+.traffic span:nth-child(3)::after{content:"✕";color:var(--ink);font-size:12px;font-weight:900;line-height:1;}
+.body-area{padding:22px 20px;}
+
+/* connect */
+.connect-wrap h2{font-size:17px;margin:0 0 5px;}
+.connect-wrap p{font-size:13px;color:#5a5468;margin:0 0 14px;line-height:1.6;}
+.connect-row{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:10px;}
+.connect-row input{flex:1 1 280px;font-family:inherit;font-size:13px;border:3px solid var(--ink);border-radius:11px;padding:10px 12px;background:#fff;color:var(--ink);box-shadow:3px 3px 0 var(--ink);}
+.connect-row input:focus{outline:3px solid var(--gold);outline-offset:1px;}
+.btn{border:3px solid var(--ink);border-radius:11px;font-family:inherit;font-weight:700;font-size:13.5px;padding:10px 16px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);transition:transform .12s,box-shadow .12s;background:#fff;}
+.btn:hover{transform:translateY(-2px);}
+.btn:active{transform:translateY(2px);box-shadow:1px 1px 0 var(--ink);}
+.btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+.btn-blue{background:var(--blue);color:#fff;}
+.btn-teal{background:var(--teal);color:#fff;}
+.btn-gold{background:var(--gold);}
+.btn-sm{font-size:12px;padding:7px 12px;}
+.error-msg{background:#FFE3E3;border:2px solid var(--red);color:#8a1620;font-size:12px;border-radius:9px;padding:9px 12px;margin-top:10px;}
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.5);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:5px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* roster panel */
+.roster-upload-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.roster-status{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;border:2px solid var(--ink);}
+.roster-status.ok{background:var(--teal);color:#fff;}
+.roster-status.empty{background:#fff;color:#897f9c;}
+
+/* summary cards */
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:6px;}
+.stat-card{background:#fff;border:3px solid var(--ink);border-radius:13px;padding:12px 14px;box-shadow:3px 3px 0 rgba(21,19,26,.12);}
+.stat-card .num{font-size:24px;font-weight:900;font-family:"Archivo Black";}
+.stat-card .num.blue{color:var(--blue);}
+.stat-card .num.teal{color:var(--teal);}
+.stat-card .num.red{color:var(--red);}
+.stat-card .num.orange{color:var(--orange);}
+.stat-card .lbl{font-size:11px;color:#5a5468;margin-top:2px;}
+
+/* region tabs */
+.tab-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px;}
+.tab-btn{border:3px solid var(--ink);border-radius:999px;background:#fff;font-family:inherit;font-size:12px;font-weight:700;padding:6px 14px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);transition:all .15s;}
+.tab-btn:hover{transform:translateY(-2px);}
+.tab-btn.active{background:var(--blue);color:#fff;}
+
+/* refresh row */
+.refresh-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+.updated-at{font-size:11px;color:#897f9c;}
+
+/* three column lists */
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+@media(max-width:600px){.three-col{grid-template-columns:1fr;}}
+.col-box{border:3px solid var(--ink);border-radius:14px;overflow:hidden;}
+.col-head{padding:10px 14px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px;border-bottom:3px solid var(--ink);}
+.col-head.checked{background:var(--teal);color:#fff;}
+.col-head.unchecked{background:var(--red);color:#fff;}
+.col-head.extra{background:var(--gold);}
+.col-head .count{font-size:20px;font-weight:900;font-family:"Archivo Black";}
+.col-list{background:#fff;max-height:340px;overflow-y:auto;}
+.name-row{padding:9px 14px;border-bottom:1px solid #f0ece6;font-size:13.5px;line-height:1.4;}
+.name-row:last-child{border-bottom:none;}
+.name-row .nr-name{font-weight:700;}
+.name-row .nr-meta{font-size:11px;color:#897f9c;margin-top:2px;}
+.name-row .nr-time{font-size:10.5px;color:#b0a8c0;}
+.empty-note{padding:18px 14px;font-size:13px;color:#b0a8c0;text-align:center;}
+.no-roster-note{background:#fffbeb;border:2px dashed var(--gold);border-radius:11px;padding:12px 14px;font-size:12.5px;color:#7a5a00;margin-bottom:14px;}
+
+.footer-note{position:relative;z-index:2;text-align:center;font-size:11px;color:rgba(255,255,255,.75);margin-top:16px;}
+.hidden{display:none!important;}
+@media(prefers-reduced-motion:reduce){.sparkle,.window{animation:none!important;}}
+</style>
+</head>
+<body>
+<div class="app-bg" id="appBg"></div>
+<div class="stage">
+
+  <!-- 連線 + 名單設定 -->
+  <div class="window" id="setupPanel">
+    <div class="titlebar">
+      <span class="label"><img src="logo_暑工.svg" alt="">報到確認後台　工作人員專用</span>
+      <div class="traffic"><span></span><span></span><span></span></div>
+    </div>
+    <div class="body-area">
+      <div class="connect-wrap">
+        <h2>連線設定</h2>
+        <p>輸入簽到系統 GAS 網址後連線，即可即時查看各區報到狀況。上傳名單 CSV 後可比對尚未報到的學員。</p>
+        <div class="connect-row">
+          <input type="text" id="gasUrlInput" placeholder="https://script.google.com/macros/s/…/exec">
+          <button class="btn btn-blue" id="connectBtn" onclick="connect()">
+            <span id="connectSpinner" class="spinner hidden"></span>
+            <span id="connectBtnText">連線讀取</span>
+          </button>
+        </div>
+        <div id="connectError"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主後台畫面 -->
+  <div id="dashPanel" class="hidden">
+
+    <!-- 名單上傳 -->
+    <div class="window">
+      <div class="titlebar">
+        <span class="label">名單匯入（可之後補上）</span>
+        <div class="traffic"><span></span><span></span><span></span></div>
+      </div>
+      <div class="body-area" style="padding-top:18px;padding-bottom:18px;">
+        <div class="roster-upload-row">
+          <button class="btn btn-gold btn-sm" onclick="document.getElementById('rosterInput').click()">匯入名單 CSV</button>
+          <button class="btn btn-sm" id="clearRosterBtn" onclick="clearRoster()" style="display:none;">清除名單</button>
+          <span class="roster-status empty" id="rosterStatus">未載入（名單未匯入時只顯示實際簽到記錄）</span>
+          <input type="file" id="rosterInput" accept=".csv" style="display:none;" onchange="loadRoster(this)">
+        </div>
+      </div>
+    </div>
+
+    <!-- 總覽 -->
+    <div class="window">
+      <div class="titlebar">
+        <span class="label">總覽</span>
+        <div class="traffic"><span></span><span></span><span></span></div>
+      </div>
+      <div class="body-area">
+        <div class="refresh-row">
+          <div class="updated-at" id="updatedAt"></div>
+          <button class="btn btn-teal btn-sm" onclick="refresh()">
+            <span id="refreshSpinner" class="spinner hidden"></span>
+            <span id="refreshText">重新整理</span>
+          </button>
+        </div>
+        <div class="summary-grid" id="summaryGrid"></div>
+      </div>
+    </div>
+
+    <!-- 場次分頁 + 三欄列表 -->
+    <div class="window">
+      <div class="titlebar">
+        <span class="label">各區報到詳情</span>
+        <div class="traffic"><span></span><span></span><span></span></div>
+      </div>
+      <div class="body-area">
+        <div class="tab-row" id="tabRow"></div>
+        <div id="noRosterNote" class="no-roster-note hidden">⚠ 尚未匯入名單，目前只顯示已簽到名單。匯入 CSV 後可比對「未簽到」的學員。</div>
+        <div class="three-col" id="threeCol"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="footer-note">115 年度原住民族青年暑期工讀教育訓練　原住民族委員會</div>
+
+<script>
+const REGIONS = ["台東區","北區","宜花區","中區","南區"];
+const REGION_FULL = {
+  "台東區": "台東區：7/16(三)–7/17(四)",
+  "北區":   "北區：7/20(日)–7/21(一)",
+  "宜花區": "宜花區：7/28(一)–7/29(二)",
+  "中區":   "中區：8/6(三)–8/7(四)",
+  "南區":   "南區：8/11(一)–8/12(二)",
+};
+
+let gasUrl = "";
+let allRecords = [];   // [{name, event, tribe, area, writeTime, rosterMatched}, ...]
+let roster = {};       // {"台東區": [{name, tribe, area}], ...}
+let currentRegion = "台東區";
+let lastUpdated = "";
+const REDUCE_MOTION = window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+
+/* ── connect / refresh ── */
+window.connect = async function(){
+  const url = document.getElementById("gasUrlInput").value.trim();
+  if(!url || !url.includes("script.google.com")){ showErr("請輸入正確的 GAS 網址。"); return; }
+  gasUrl = url;
+  setBusy("connect", true); clearErr();
+  const ok = await fetchCheckins();
+  setBusy("connect", false);
+  if(ok){
+    document.getElementById("setupPanel").classList.add("hidden");
+    document.getElementById("dashPanel").classList.remove("hidden");
+  }
+};
+
+window.refresh = async function(){
+  if(!gasUrl) return;
+  setBusy("refresh", true);
+  await fetchCheckins();
+  setBusy("refresh", false);
+};
+
+async function fetchCheckins(){
+  try {
+    const sep = gasUrl.includes("?") ? "&" : "?";
+    const res  = await fetch(gasUrl + sep + "action=checkins");
+    const data = await res.json();
+    if(!data.success) throw new Error(data.error || "GAS 回傳錯誤");
+    allRecords = data.records || [];
+    lastUpdated = data.updatedAt || "";
+    renderDash();
+    return true;
+  } catch(err){
+    showErr("連線失敗：" + err.message);
+    return false;
+  }
+}
+
+/* ── roster ── */
+window.loadRoster = function(input){
+  const file = input.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try{
+      const rows = parseCSV(e.target.result);
+      // group by region — CSV columns: 場次（or 區域）, 姓名, 族別, 服務地區
+      // if no 場次 column, put all into current tab region
+      roster = {};
+      rows.forEach(r => {
+        const rg = guessRegion(r.region || "") || currentRegion;
+        if(!roster[rg]) roster[rg] = [];
+        roster[rg].push(r);
+      });
+      updateRosterUI();
+      renderDash();
+    } catch(err){ alert("CSV 解析失敗：" + err.message); }
+    input.value = "";
+  };
+  reader.readAsText(file, "utf-8");
+};
+
+function guessRegion(str){
+  for(const r of REGIONS){ if(str.includes(r)) return r; }
+  return null;
+}
+
+function parseCSV(text){
+  text = text.replace(/^\uFEFF/,"");
+  const lines = text.split(/\r?\n/).filter(l=>l.trim());
+  if(lines.length < 2) return [];
+  const headers = lines[0].split(",").map(h=>h.trim());
+  const idx = k => headers.findIndex(h=>h.includes(k));
+  const nameIdx  = idx("姓名") >= 0 ? idx("姓名") : 0;
+  const tribeIdx = idx("族別");
+  const areaIdx  = idx("服務地區") >= 0 ? idx("服務地區") : idx("地區");
+  const regionIdx = idx("場次") >= 0 ? idx("場次") : idx("區域") >= 0 ? idx("區域") : -1;
+  if(nameIdx < 0) throw new Error("找不到「姓名」欄位");
+  return lines.slice(1).map(line=>{
+    const cols = line.split(",").map(c=>c.trim().replace(/^"|"$/g,""));
+    return {
+      name:   cols[nameIdx]  || "",
+      tribe:  tribeIdx  >= 0 ? (cols[tribeIdx]  || "") : "",
+      area:   areaIdx   >= 0 ? (cols[areaIdx]   || "") : "",
+      region: regionIdx >= 0 ? (cols[regionIdx]  || "") : "",
+    };
+  }).filter(r=>r.name);
+}
+
+function updateRosterUI(){
+  const total = Object.values(roster).reduce((a,v)=>a+v.length, 0);
+  const loaded = total > 0;
+  const status = document.getElementById("rosterStatus");
+  status.textContent = loaded ? `已載入 ${total} 筆（${Object.keys(roster).filter(k=>roster[k].length).join("、")}）` : "未載入";
+  status.className = "roster-status " + (loaded ? "ok" : "empty");
+  document.getElementById("clearRosterBtn").style.display = loaded ? "" : "none";
+}
+
+window.clearRoster = function(){
+  roster = {}; updateRosterUI(); renderDash();
+};
+
+/* ── render ── */
+function renderDash(){
+  renderSummary();
+  renderTabs();
+  renderDetail(currentRegion);
+  document.getElementById("updatedAt").textContent = lastUpdated ? "資料時間：" + lastUpdated : "";
+}
+
+function renderSummary(){
+  const total = allRecords.length;
+  const rosterTotal = Object.values(roster).reduce((a,v)=>a+v.length, 0);
+  const uniqueChecked = [...new Set(allRecords.map(r=>r.name))].length;
+
+  let html = `
+    <div class="stat-card"><div class="num blue" data-target="${total}" data-dec="0">0</div><div class="lbl">累計簽到筆數</div></div>
+    <div class="stat-card"><div class="num blue" data-target="${uniqueChecked}" data-dec="0">0</div><div class="lbl">不重複簽到人數</div></div>`;
+
+  if(rosterTotal > 0){
+    const checkedNames = new Set(allRecords.map(r=>r.name.trim()));
+    let notYet = 0;
+    Object.values(roster).forEach(list => list.forEach(p => { if(!checkedNames.has(p.name)) notYet++; }));
+    html += `
+      <div class="stat-card"><div class="num orange" data-target="${rosterTotal}" data-dec="0">0</div><div class="lbl">名單總人數</div></div>
+      <div class="stat-card"><div class="num red" data-target="${notYet}" data-dec="0">0</div><div class="lbl">尚未簽到</div></div>`;
+  }
+
+  document.getElementById("summaryGrid").innerHTML = html;
+  animateCountUps(document.getElementById("summaryGrid"));
+}
+
+function renderTabs(){
+  document.getElementById("tabRow").innerHTML = REGIONS.map(r => {
+    const cnt = allRecords.filter(rec => rec.event && rec.event.includes(r)).length;
+    return `<button class="tab-btn ${currentRegion===r?"active":""}" onclick="switchTab('${r}')">${r}（${cnt}）</button>`;
+  }).join("");
+}
+
+window.switchTab = function(r){ currentRegion = r; renderDetail(r); renderTabs(); };
+
+function renderDetail(region){
+  const hasRoster = roster[region] && roster[region].length > 0;
+  document.getElementById("noRosterNote").classList.toggle("hidden", hasRoster);
+
+  // records for this region
+  const recs = allRecords.filter(rec => rec.event && rec.event.includes(region));
+  const checkedNames = new Set(recs.map(r => r.name.trim()));
+
+  // checked in list (with time)
+  const checkedList = recs.map(r => ({ name: r.name, tribe: r.tribe, area: r.area, time: r.writeTime }));
+
+  // not yet (only if roster available)
+  const notYetList = hasRoster
+    ? roster[region].filter(p => !checkedNames.has(p.name.trim()))
+    : [];
+
+  // extra (checked in but not in roster)
+  const rosterNames = hasRoster ? new Set(roster[region].map(p => p.name.trim())) : null;
+  const extraList   = hasRoster
+    ? recs.filter(r => !rosterNames.has(r.name.trim())).map(r => ({ name: r.name, tribe: r.tribe, area: r.area, time: r.writeTime }))
+    : [];
+
+  function nameCard(p, showTime=false){
+    return `<div class="name-row">
+      <div class="nr-name">${escHtml(p.name)}</div>
+      <div class="nr-meta">${[p.tribe,p.area].filter(Boolean).map(escHtml).join("　")}</div>
+      ${showTime && p.time ? `<div class="nr-time">${escHtml(String(p.time))}</div>` : ""}
+    </div>`;
+  }
+
+  const col = (type, label, icon, list, showTime=false) => `
+    <div class="col-box">
+      <div class="col-head ${type}">
+        <span class="count">${list.length}</span>${icon} ${label}
+      </div>
+      <div class="col-list">
+        ${list.length ? list.map(p=>nameCard(p,showTime)).join("") : `<div class="empty-note">無</div>`}
+      </div>
+    </div>`;
+
+  document.getElementById("threeCol").innerHTML =
+    col("checked",   "已簽到",      "✅", checkedList, true) +
+    col("unchecked", hasRoster ? "未簽到" : "（需匯入名單）", "❌", notYetList) +
+    col("extra",     hasRoster ? "名單外" : "（需匯入名單）", "⚠️", hasRoster ? extraList : []);
+}
+
+/* ── helpers ── */
+function escHtml(s){ const d=document.createElement("div"); d.textContent=s; return d.innerHTML; }
+function showErr(m){ document.getElementById("connectError").innerHTML=`<div class="error-msg">${m}</div>`; }
+function clearErr(){ document.getElementById("connectError").innerHTML=""; }
+function setBusy(which, on){
+  if(which==="connect"){
+    document.getElementById("connectBtn").disabled=on;
+    document.getElementById("connectBtnText").textContent=on?"讀取中...":"連線讀取";
+    document.getElementById("connectSpinner").classList.toggle("hidden",!on);
+  } else {
+    document.getElementById("refreshText").textContent=on?"更新中...":"重新整理";
+    document.getElementById("refreshSpinner").classList.toggle("hidden",!on);
+  }
+}
+function animateCountUps(scope){
+  scope.querySelectorAll("[data-target]").forEach(el=>{
+    const t=parseFloat(el.dataset.target), d=parseInt(el.dataset.dec||"0");
+    if(isNaN(t)) return;
+    if(REDUCE_MOTION){ el.textContent=t.toFixed(d); return; }
+    const dur=600, st=performance.now();
+    (function step(now){
+      const p=Math.min((now-st)/dur,1), e=1-Math.pow(1-p,3);
+      el.textContent=Math.round(t*e);
+      if(p<1) requestAnimationFrame(step); else el.textContent=Math.round(t);
+    })(performance.now());
+  });
+}
+
+/* ── sparkle ── */
+(function(){
+  const bg=document.getElementById("appBg"), layer=document.createElement("div");
+  layer.className="sparkle-layer"; bg.appendChild(layer);
+  [[4,8],[10,68],[88,14],[92,72],[50,3],[3,40],[95,44]].forEach(([x,y])=>{
+    const s=document.createElement("div"); s.className="sparkle";
+    s.style.left=x+"%"; s.style.top=y+"%";
+    s.style.setProperty("--s",(0.6+Math.random()*0.8).toFixed(2));
+    s.style.setProperty("--r",(Math.random()*30)+"deg");
+    s.style.animationDelay=(Math.random()*3)+"s"; layer.appendChild(s);
+  });
+  if(!REDUCE_MOTION && window.matchMedia("(pointer:fine)").matches){
+    document.addEventListener("mousemove",e=>{
+      const dx=(e.clientX/window.innerWidth-.5)*2, dy=(e.clientY/window.innerHeight-.5)*2;
+      layer.style.transform=`translate(${dx*12}px,${dy*12}px)`;
+    });
+  }
+})();
+</script>
+</body>
+</html>
