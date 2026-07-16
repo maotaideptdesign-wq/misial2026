@@ -94,7 +94,7 @@
         <h2>連線至問卷後台</h2>
         <p>輸入問卷系統的 GAS 網址後點選連線，系統會即時從 Google 試算表讀取五區所有回覆並自動計算統計，無需手動匯出 CSV。</p>
         <div class="connect-row">
-          <input type="text" id="gasUrlInput" placeholder="https://script.google.com/macros/s/…/exec">
+          <input type="text" id="gasUrlInput" placeholder="https://script.google.com/macros/s/…/exec" value="https://script.google.com/macros/s/AKfycbzwckfNp3LihxWrSc7nMSzIOKdz3rDEZHCuIUkwBDUvpTppy7ebK40cWco0zGyD1Nr9Nw/exec">
           <button class="btn btn-primary" id="connectBtn" onclick="connect()">
             <span id="connectBtnText">連線讀取</span>
             <span id="connectSpinner" class="spinner hidden"></span>
@@ -429,7 +429,7 @@ function animateCountUps(scope){
 }
 
 /* ── helpers ── */
-function showErr(msg){ document.getElementById("connectError").innerHTML=`<div class="error-msg">${msg}</div>`; }
+function showErr(msg){ document.getElementById("connectError").innerHTML=`<div class="error-msg" style="line-height:1.8">${msg}</div>`; }
 function clearErr(){ document.getElementById("connectError").innerHTML=""; }
 function setBusy(which,on){
   if(which==="connect"){
