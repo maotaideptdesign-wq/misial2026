@@ -362,6 +362,9 @@ const SECTION4 = [
 const SECTION5 = [
   "課程期待程度","課程師資專業性","課程內容豐富性","課程時間安排","從中獲取專業知識"
 ];
+const SECTION_CIVIL = [
+  "課程期待程度","課程師資專業性","課程內容豐富性","課程時間安排","從中獲取專業知識（公務經驗分享）"
+];
 const SECTION6 = [
   "部落參訪走讀","部落手作體驗","部落達人分享","議題分組討論及分享","體驗場域環境","部落餐食規劃","從中獲取專業知識"
 ];
@@ -372,7 +375,8 @@ const TRIBE_OPTIONS = [
   "鄒族","卑南族","魯凱族","賽夏族","雅美族（達悟族）","邵族","噶瑪蘭族","撒奇萊雅族"
 ];
 const IMPRESSION_OPTIONS = [
-  "政策課程（某堂特定課程／師資）","部落文化導覽與手作體驗","在地特色餐食安排","與工作人員或其他學員的互動交流"
+  "原住民族政策課程","部落參訪走讀","部落手作體驗","部落達人分享",
+  "議題分組討論及分享","在地特色餐食安排","與工作人員或其他學員的互動交流"
 ];
 
 const state = {
@@ -381,12 +385,12 @@ const state = {
   identity:"",
   tribe:"",
   serviceArea:"",
-  r4:{}, r5:{}, r6:{},
+  r4:{}, r5:{}, rCivil:{}, r6:{},
   impression:[], impressionOther:"",
   feedback:"",
 };
 
-const totalDataSteps = 5; // step 1~5 shown in progress dots
+const totalDataSteps = 6; // step 1~6 shown in progress dots
 
 /* ---------------- render helpers ---------------- */
 const bodyArea = document.getElementById("bodyArea");
@@ -490,7 +494,7 @@ function stepRatingScreen(stepNum, title, groupKey, items){
   `;
 }
 
-function screenStep5(){
+function screenStep6(){
   return `
   ${progressDots(5)}
   <div class="step-eyebrow">STEP 5 / 5</div>
@@ -521,7 +525,7 @@ function screenStep5(){
   </div>
 
   <div id="errBox"></div>
-  ${navRow(5, true)}
+  ${navRow(6, true)}
   `;
 }
 
@@ -607,6 +611,10 @@ window.tryNext = function(stepNum){
     if(missing>-1){ flashMissing("r5", missing); return; }
   }
   if(stepNum===4){
+    const missing = validateRatings("rCivil", SECTION_CIVIL);
+    if(missing>-1){ flashMissing("rCivil", missing); return; }
+  }
+  if(stepNum===5){
     const missing = validateRatings("r6", SECTION6);
     if(missing>-1){ flashMissing("r6", missing); return; }
   }
@@ -645,9 +653,10 @@ function flashMissing(groupKey, idx){
 
 /* ---------------- submit to GAS ---------------- */
 function buildPayload(){
-  const rows4 = {}, rows5 = {}, rows6 = {};
+  const rows4 = {}, rows5 = {}, rowsCivil = {}, rows6 = {};
   SECTION4.forEach((label,i)=>rows4[label]=state.r4[i]);
   SECTION5.forEach((label,i)=>rows5[label]=state.r5[i]);
+  SECTION_CIVIL.forEach((label,i)=>rowsCivil[label]=state.rCivil[i]);
   SECTION6.forEach((label,i)=>rows6[label]=state.r6[i]);
   return {
     timestamp: new Date().toISOString(),
@@ -657,6 +666,7 @@ function buildPayload(){
     serviceArea: state.serviceArea,
     section4_admin: rows4,
     section5_policy: rows5,
+    section_civil: rowsCivil,
     section6_tribal: rows6,
     impression: state.impression.includes("其他")
       ? state.impression.filter(o=>o!=="其他").concat(`其他：${state.impressionOther}`)
@@ -691,9 +701,10 @@ function render(){
   if(state.step === 0) html = screenIntro();
   else if(state.step === 1) html = screenStep1();
   else if(state.step === 2) html = stepRatingScreen(2, "行政庶務與環境服務", "r4", SECTION4);
-  else if(state.step === 3) html = stepRatingScreen(3, "教育訓練課程：原住民族政策", "r5", SECTION5);
-  else if(state.step === 4) html = stepRatingScreen(4, "部落參訪體驗", "r6", SECTION6);
-  else if(state.step === 5) html = screenStep5();
+  else if(state.step === 3) html = stepRatingScreen(3, "課程：原住民族政策", "r5", SECTION5);
+  else if(state.step === 4) html = stepRatingScreen(4, "課程：公務經驗分享", "rCivil", SECTION_CIVIL);
+  else if(state.step === 5) html = stepRatingScreen(5, "部落參訪體驗", "r6", SECTION6);
+  else if(state.step === 6) html = screenStep6();
   else if(state.step === "submitting") html = screenSubmitting();
   else if(state.step === "success") html = screenSuccess();
   else if(state.step === "error") html = screenError(state.errMsg);
