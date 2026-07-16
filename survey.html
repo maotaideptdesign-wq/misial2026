@@ -2,625 +2,810 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>原青 MASIAL！職感未來式｜滿意度分析後台</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>原青 MASIAL！職感未來式｜滿意度問卷</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
-  :root{--pink:#F23D9E;--pink-deep:#D81E83;--blue:#076fb8;--blue-deep:#054d80;--red:#E2222E;--gold:#F6C23E;--teal:#1FB6A6;--orange:#F08A3C;--cream:#FBF3EA;--ink:#15131A;--radius:18px;}
-  *{box-sizing:border-box;}html,body{margin:0;padding:0;}
-  body{min-height:100vh;font-family:"Noto Sans TC",sans-serif;color:var(--ink);background:var(--blue);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
-  .app-bg{position:fixed;inset:0;z-index:0;background:var(--blue);}
-  .sparkle-layer{position:absolute;inset:0;transition:transform .35s ease-out;will-change:transform;}
-  .sparkle{position:absolute;width:26px;height:26px;background:var(--red);clip-path:polygon(50% 0%,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0% 50%,39% 39%);opacity:.6;z-index:1;transform:scale(var(--s,1)) rotate(var(--r,0deg));animation:twinkle 3.2s ease-in-out infinite;}
-  @keyframes twinkle{0%,100%{opacity:.35;}50%{opacity:.9;}}
-  .stage{position:relative;z-index:2;max-width:980px;margin:0 auto;padding:28px 16px 70px;}
-  .window{background:var(--cream);border:4px solid var(--ink);border-radius:var(--radius);box-shadow:10px 10px 0 var(--ink);overflow:hidden;margin-bottom:26px;animation:pop-in .45s cubic-bezier(.2,.9,.25,1.2);}
-  @keyframes pop-in{from{opacity:0;transform:translateY(14px) scale(.98);}to{opacity:1;transform:none;}}
-  .titlebar{background:var(--pink);border-bottom:4px solid var(--ink);display:flex;align-items:center;justify-content:space-between;padding:10px 14px;}
-  .titlebar .label{font-size:13px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;flex:1 1 auto;}
-  .titlebar img.logo-mini{height:18px;width:auto;display:block;}
-  .traffic{display:flex;gap:8px;flex-shrink:0;}
-  .traffic span{width:20px;height:20px;border:3px solid var(--ink);border-radius:5px;display:flex;align-items:center;justify-content:center;transition:transform .18s;}
+  :root{
+    --pink:#F23D9E;
+    --pink-deep:#D81E83;
+    --blue:#076fb8;
+    --blue-deep:#054d80;
+    --red:#E2222E;
+    --gold:#F6C23E;
+    --teal:#1FB6A6;
+    --cream:#FBF3EA;
+    --ink:#15131A;
+    --line:6px;
+    --radius:18px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    font-family:"Noto Sans TC",sans-serif;
+    color:var(--ink);
+    background:var(--blue);
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  .display{font-family:"Archivo Black","Noto Sans TC",sans-serif;}
+
+  /* ---------- background ---------- */
+  .app-bg{
+    position:fixed; inset:0; z-index:0;
+    background:var(--blue);
+  }
+  .sparkle-layer{position:absolute; inset:0; transition:transform .35s ease-out; will-change:transform;}
+  .sparkle{
+    position:absolute;
+    width:26px; height:26px;
+    background:var(--red);
+    clip-path:polygon(50% 0%,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0% 50%,39% 39%);
+    opacity:.6;
+    z-index:1;
+    transform:scale(var(--s,1)) rotate(var(--r,0deg));
+    animation:twinkle 3.2s ease-in-out infinite;
+  }
+  @keyframes twinkle{0%,100%{opacity:.35;} 50%{opacity:.9;}}
+
+  /* ---------- layout ---------- */
+  .stage{
+    position:relative; z-index:2;
+    min-height:100vh;
+    display:flex; align-items:flex-start; justify-content:center;
+    padding:28px 16px 60px;
+  }
+  .window{
+    width:100%; max-width:640px;
+    background:var(--cream);
+    border:4px solid var(--ink);
+    border-radius:var(--radius);
+    box-shadow:10px 10px 0 var(--ink);
+    overflow:hidden;
+    animation:pop-in .45s cubic-bezier(.2,.9,.25,1.2);
+  }
+  @keyframes pop-in{from{opacity:0; transform:translateY(14px) scale(.98);} to{opacity:1; transform:none;}}
+
+  .titlebar{
+    background:var(--pink);
+    border-bottom:4px solid var(--ink);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 14px;
+  }
+  .titlebar .label{
+    font-size:13px; font-weight:700; color:#fff;
+    letter-spacing:.04em;
+    display:flex; align-items:center; gap:8px;
+    min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+    flex:1 1 auto;
+  }
+  .titlebar .label .dot{width:8px;height:8px;background:#fff;border-radius:50%;display:inline-block;}
+  .traffic{display:flex; gap:8px; flex-shrink:0;}
+  .traffic span{
+    width:20px; height:20px; border:3px solid var(--ink); border-radius:5px;
+    display:flex; align-items:center; justify-content:center;
+    transition:transform .18s;
+  }
   .traffic span:hover{transform:rotate(-10deg) scale(1.18);}
   .traffic span:nth-child(1){background:var(--red);}
   .traffic span:nth-child(2){background:#FFF3D6;}
   .traffic span:nth-child(3){background:var(--red);}
-  .traffic span:nth-child(3)::after{content:"✕";color:var(--ink);font-size:13px;font-weight:900;line-height:1;}
-  .body-area{padding:26px 24px;}
+  .traffic span:nth-child(3)::after{content:"✕"; color:var(--ink); font-size:13px; font-weight:900; line-height:1;}
 
-  .connect-wrap h2{font-size:18px;margin:0 0 6px;}
-  .connect-wrap p{font-size:13.5px;color:#5a5468;margin:0 0 18px;line-height:1.6;}
-  .connect-row{display:flex;gap:10px;flex-wrap:wrap;}
-  .connect-row input{flex:1 1 300px;font-family:inherit;font-size:13.5px;border:3px solid var(--ink);border-radius:12px;padding:11px 13px;background:#fff;color:var(--ink);box-shadow:3px 3px 0 var(--ink);}
-  .connect-row input:focus{outline:3px solid var(--gold);outline-offset:1px;}
-  .btn{border:3px solid var(--ink);border-radius:12px;font-family:inherit;font-weight:700;font-size:14px;padding:11px 18px;cursor:pointer;box-shadow:4px 4px 0 var(--ink);transition:transform .12s,box-shadow .12s;background:#fff;}
+  .body-area{padding:26px 22px 24px;}
+
+  /* progress */
+  .progress{
+    display:flex; gap:7px; justify-content:center; margin-bottom:22px;
+  }
+  .progress i{
+    width:16px; height:16px;
+    background:#fff; border:3px solid var(--ink);
+    transform:rotate(45deg);
+    transition:background .25s, transform .25s;
+  }
+  .progress i.done{background:var(--teal);}
+  .progress i.active{background:var(--gold); transform:rotate(45deg) scale(1.25);}
+
+  .step-eyebrow{
+    font-size:12px; font-weight:700; color:var(--pink-deep);
+    letter-spacing:.12em; margin:0 0 6px;
+  }
+  h2.step-title{
+    font-size:22px; margin:0 0 4px; line-height:1.35;
+  }
+  p.step-desc{font-size:13.5px; color:#5a5468; margin:0 0 20px; line-height:1.6;}
+
+  /* ---- hero (intro) ---- */
+  .hero{text-align:center;}
+  .hero .kicker{
+    font-size:13px; font-weight:700; letter-spacing:.08em; color:var(--blue-deep);
+    margin-bottom:10px;
+  }
+  .hero h1{
+    margin:0 0 4px; line-height:1.15;
+  }
+  .hero h1 .line1{display:block; font-size:30px; color:var(--ink);}
+  .hero h1 .line2{
+    display:block; font-size:30px;
+    color:var(--blue);
+    -webkit-text-stroke:1.5px var(--ink);
+  }
+  .hero h1 .line3{display:block; font-size:42px; margin-top:4px;}
+  .hero h1 .line3 .a{color:var(--red); -webkit-text-stroke:1.5px var(--ink);}
+  .hero h1 .line3 .b{color:var(--ink);}
+  .hero p.sub{font-size:14px; color:#5a5468; margin:14px 0 26px; line-height:1.7;}
+  .hero .badge-row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:26px;}
+  .logo-img{
+    width:100%; max-width:340px; height:auto;
+    margin:6px auto 4px; display:block;
+    filter:drop-shadow(3px 4px 0 rgba(0,0,0,.0));
+  }
+  .titlebar .logo-mini{height:18px; width:auto; display:block;}
+  .pillchip{
+    border:3px solid var(--ink); border-radius:999px; padding:6px 14px;
+    font-size:12px; font-weight:700; background:#fff;
+  }
+  .pillchip.teal{background:var(--teal); color:#fff;}
+  .pillchip.gold{background:var(--gold);}
+  .pillchip.pink{background:var(--pink); color:#fff;}
+
+  /* ---- form bits ---- */
+  .field{margin-bottom:22px;}
+  .field-label{
+    display:block; font-weight:700; font-size:14.5px; margin-bottom:10px;
+  }
+  .field-label .req{color:var(--red); margin-left:3px;}
+  .hint{font-size:12px; color:#897f9c; margin:-4px 0 10px;}
+
+  .choice-grid{display:flex; flex-wrap:wrap; gap:9px;}
+  .choice-btn{
+    border:3px solid var(--ink); background:#fff; border-radius:12px;
+    padding:9px 14px; font-size:13.5px; font-weight:600; cursor:pointer;
+    transition:transform .12s, box-shadow .12s, background .15s;
+    box-shadow:3px 3px 0 var(--ink);
+  }
+  .choice-btn:hover{transform:translateY(-2px);}
+  .choice-btn:active{transform:translateY(1px); box-shadow:1px 1px 0 var(--ink);}
+  .choice-btn.selected{background:var(--blue); color:#fff; animation:selectPop .25s ease;}
+  .choice-btn.selected.alt{background:var(--teal);}
+
+  select, input[type=text], textarea{
+    width:100%; font-family:inherit; font-size:14.5px;
+    border:3px solid var(--ink); border-radius:12px; padding:11px 13px;
+    background:#fff; color:var(--ink);
+    box-shadow:3px 3px 0 var(--ink);
+  }
+  select:focus, input:focus, textarea:focus{outline:3px solid var(--gold); outline-offset:1px;}
+  textarea{resize:vertical; min-height:90px;}
+
+  /* rating block */
+  .rating-card{
+    background:#fff; border:3px solid var(--ink); border-radius:14px;
+    padding:13px 14px; margin-bottom:13px;
+    box-shadow:3px 3px 0 rgba(21,19,26,.18);
+  }
+  .rating-card .q{font-size:14px; font-weight:700; margin-bottom:10px;}
+  .scale-row{display:flex; gap:6px; flex-wrap:wrap;}
+  .scale-btn{
+    flex:1 1 18%; min-width:54px;
+    border:2.5px solid var(--ink); border-radius:10px; background:#fff;
+    font-size:11.5px; font-weight:700; line-height:1.25; padding:8px 2px;
+    cursor:pointer; text-align:center; transition:all .15s;
+  }
+  .scale-btn.sel{animation:selectPop .25s ease;}
+  .scale-btn[data-v="5"].sel{background:var(--blue); color:#fff;}
+  .scale-btn[data-v="4"].sel{background:var(--teal); color:#fff;}
+  .scale-btn[data-v="3"].sel{background:var(--gold); color:var(--ink);}
+  .scale-btn[data-v="2"].sel{background:#F08A3C; color:#fff;}
+  .scale-btn[data-v="1"].sel{background:var(--red); color:#fff;}
+  @keyframes selectPop{0%{transform:scale(1);} 50%{transform:scale(1.12);} 100%{transform:scale(1);}}
+  .rating-card.missing{outline:2px dashed var(--red); outline-offset:3px;}
+
+  .check-row{display:flex; align-items:flex-start; gap:10px; padding:10px 4px; border-bottom:2px dashed #e3d9cf;}
+  .check-row:last-child{border-bottom:none;}
+  .check-row input{width:18px; height:18px; margin-top:3px; accent-color:var(--blue);}
+  .check-row label{font-size:14px; line-height:1.5; cursor:pointer;}
+  .other-input{margin-top:8px; margin-left:28px; display:none;}
+  .other-input.show{display:block;}
+
+  /* nav buttons */
+  .nav-row{display:flex; justify-content:space-between; gap:12px; margin-top:8px;}
+  .btn{
+    border:3px solid var(--ink); border-radius:12px;
+    font-family:inherit; font-weight:700; font-size:14.5px;
+    padding:12px 20px; cursor:pointer;
+    box-shadow:4px 4px 0 var(--ink);
+    transition:transform .12s, box-shadow .12s;
+  }
   .btn:hover{transform:translateY(-2px);}
-  .btn:active{transform:translateY(2px);box-shadow:1px 1px 0 var(--ink);}
-  .btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
-  .btn-primary{background:var(--blue);color:#fff;}
-  .btn-teal{background:var(--teal);color:#fff;}
-  .btn-gold{background:var(--gold);}
-  .btn-sm{font-size:12.5px;padding:8px 14px;}
+  .btn:active{transform:translateY(2px); box-shadow:1px 1px 0 var(--ink);}
+  .btn:disabled{opacity:.45; cursor:not-allowed; transform:none;}
+  .btn-primary{background:var(--blue); color:#fff;}
+  .btn-ghost{background:#fff; color:var(--ink);}
+  .btn-wide{width:100%;}
+  .btn-start{background:var(--red); color:#fff; font-size:16px; padding:15px 24px;}
 
-  .diag-box{background:#fff;border:3px solid var(--gold);border-radius:14px;padding:16px 18px;margin-top:16px;}
-  .diag-box h4{margin:0 0 10px;font-size:14px;display:flex;align-items:center;gap:8px;}
-  .diag-box .step{display:flex;gap:10px;margin-bottom:10px;font-size:13px;line-height:1.6;}
-  .diag-box .step .icon{flex-shrink:0;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff;}
-  .diag-box .step .icon.pass{background:var(--teal);}
-  .diag-box .step .icon.fail{background:var(--red);}
-  .diag-box .step .icon.wait{background:#d8d0e0;}
-  .diag-box .detail{font-size:12px;color:#5a5468;margin-top:2px;}
-  .diag-box .fix{background:#FFF8E5;border:2px dashed var(--gold);border-radius:10px;padding:12px 14px;margin-top:10px;font-size:12.5px;line-height:1.7;}
-  .diag-box .fix b{color:#7a5a00;}
-  .diag-box a{color:var(--blue);word-break:break-all;}
-  .raw-snippet{background:#15131A;color:#9fe870;font-family:monospace;font-size:11px;padding:10px 12px;border-radius:8px;margin-top:8px;max-height:120px;overflow:auto;white-space:pre-wrap;word-break:break-all;}
+  .error-msg{
+    background:#FFE3E3; border:2px solid var(--red); color:#8a1620;
+    font-size:12.5px; border-radius:10px; padding:9px 12px; margin-top:10px;
+  }
 
-  .spinner{display:inline-block;width:14px;height:14px;border:2.5px solid rgba(255,255,255,.5);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:6px;}
+  /* success */
+  .success-wrap{text-align:center; padding:14px 0 6px;}
+  .success-stamp{
+    width:96px; height:96px; margin:0 auto 18px;
+    border:5px solid var(--ink); border-radius:50%;
+    background:var(--teal); display:flex; align-items:center; justify-content:center;
+    color:#fff; font-size:46px; font-weight:900;
+    transform:rotate(-8deg);
+    box-shadow:5px 5px 0 var(--ink);
+  }
+  .success-wrap h2{font-size:21px; margin:0 0 8px;}
+  .success-wrap p{font-size:13.5px; color:#5a5468; line-height:1.7;}
+
+  .footer-note{
+    text-align:center; font-size:11px; color:rgba(255,255,255,.75);
+    margin-top:18px; position:relative; z-index:2;
+  }
+
+  .spinner{
+    display:inline-block; width:14px; height:14px; border:2.5px solid #fff;
+    border-top-color:transparent; border-radius:50%;
+    animation:spin .7s linear infinite; vertical-align:-2px; margin-right:6px;
+  }
   @keyframes spin{to{transform:rotate(360deg);}}
 
-  .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;}
-  .stat-card{background:#fff;border:3px solid var(--ink);border-radius:14px;padding:14px 16px;box-shadow:3px 3px 0 rgba(21,19,26,.15);}
-  .stat-card .num{font-size:26px;font-weight:900;font-family:"Archivo Black";}
-  .stat-card .num.teal{color:var(--teal);}
-  .stat-card .num.blue{color:var(--blue);}
-  .stat-card .num.pink{color:var(--pink-deep);}
-  .stat-card .lbl{font-size:12px;color:#5a5468;margin-top:2px;}
 
-  .tab-row{display:flex;gap:8px;flex-wrap:wrap;}
-  .tab-btn{border:3px solid var(--ink);border-radius:999px;background:#fff;font-family:inherit;font-size:12.5px;font-weight:700;padding:7px 16px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);transition:all .15s;}
-  .tab-btn:hover{transform:translateY(-2px);}
-  .tab-btn.active{background:var(--blue);color:#fff;}
-
-  .cat-head{display:flex;align-items:baseline;gap:10px;margin:28px 0 4px;}
-  .cat-head .idx{width:30px;height:30px;border:3px solid var(--ink);border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;flex-shrink:0;}
-  .cat-head h2{font-size:18px;margin:0;}
-  .legend-row{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 14px 40px;font-size:11.5px;}
-  .legend-row span{display:inline-flex;align-items:center;gap:5px;}
-  .legend-row i{width:11px;height:11px;border-radius:3px;display:inline-block;border:1.5px solid var(--ink);}
-
-  .item-row{margin-bottom:18px;}
-  .item-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;gap:10px;}
-  .item-name{font-size:13.5px;font-weight:700;}
-  .item-pct{font-size:13px;font-weight:900;font-family:"Archivo Black";flex-shrink:0;}
-  .item-pct.good{color:var(--teal);}
-  .item-pct.mid{color:var(--orange);}
-  .item-pct.bad{color:var(--red);}
-  .item-pct.none{color:#b0a8c0;}
-  .bar-track{height:26px;border:2.5px solid var(--ink);border-radius:7px;overflow:hidden;display:flex;background:#fff;}
-  .bar-seg{height:100%;transition:width .7s cubic-bezier(.2,.8,.2,1);}
-  .item-meta{font-size:10.5px;color:#9b91ab;margin-top:3px;}
-
-  .refresh-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;}
-  .updated-at{font-size:11.5px;color:#897f9c;}
-
-  .footer-note{position:relative;z-index:2;text-align:center;font-size:11px;color:rgba(255,255,255,.75);margin-top:18px;}
-  .hidden{display:none!important;}
-  @media(max-width:560px){.body-area{padding:20px 16px;}.legend-row{margin-left:0;}}
-  @media(prefers-reduced-motion:reduce){.sparkle,.window{animation:none!important;}}
+  /* ── PIN 畫面 ── */
+  .pin-wrap{text-align:center; padding:4px 0 10px;}
+  .pin-wrap .logo-img{max-width:220px; margin-bottom:12px;}
+  .pin-wrap h2{font-size:17px; margin:0 0 4px;}
+  .pin-wrap p{font-size:13px; color:#5a5468; margin:0 0 18px; line-height:1.6;}
+  .venue-info-sv{font-size:12px;color:#5a5468;margin:4px 0 6px;line-height:1.7;}
+  .pin-region{
+    display:inline-block; margin-bottom:16px;
+    border:3px solid var(--ink); border-radius:999px;
+    background:var(--teal); color:#fff; font-weight:700; font-size:13px;
+    padding:5px 16px; box-shadow:3px 3px 0 var(--ink);
+  }
+  .pin-dots{display:flex; gap:10px; justify-content:center; margin-bottom:18px;}
+  .pin-dots span{
+    width:16px; height:16px; border-radius:50%;
+    border:3px solid var(--ink); background:#fff;
+    transition:background .15s;
+  }
+  .pin-dots span.filled{background:var(--blue);}
+  .pin-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; max-width:240px; margin:0 auto 14px;}
+  .pin-key{
+    border:3px solid var(--ink); border-radius:12px; background:#fff;
+    font-family:inherit; font-size:20px; font-weight:700;
+    padding:14px 0; cursor:pointer;
+    box-shadow:3px 3px 0 var(--ink);
+    transition:transform .1s, box-shadow .1s;
+  }
+  .pin-key:hover{transform:translateY(-2px);}
+  .pin-key:active{transform:translateY(2px); box-shadow:1px 1px 0 var(--ink);}
+  .pin-key.del{background:var(--gold);}
+  .pin-error{
+    background:#FFE3E3; border:2px solid var(--red); color:#8a1620;
+    font-size:12.5px; border-radius:10px; padding:9px 12px;
+    animation:shake .35s ease;
+  }
+  @keyframes shake{0%,100%{transform:translateX(0);} 25%{transform:translateX(-6px);} 75%{transform:translateX(6px);}}
+  @media (max-width:420px){
+    .logo-img{max-width:260px;}
+    .scale-btn{flex:1 1 28%; font-size:11px;}
+    .body-area{padding:22px 16px 20px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .sparkle, .window{animation:none !important;}
+  }
 </style>
 </head>
 <body>
-<div class="app-bg" id="appBg"></div>
-<div class="stage">
 
-  <div class="window" id="connectPanel">
+<div class="app-bg" id="appBg"></div>
+
+<div class="stage">
+  <div class="window">
     <div class="titlebar">
-      <span class="label"><img src="logo_暑工.svg" alt="" class="logo-mini">滿意度分析後台</span>
+      <span class="label"><img src="logo_暑工.svg" alt="" class="logo-mini">滿意度問卷</span>
       <div class="traffic"><span></span><span></span><span></span></div>
     </div>
-    <div class="body-area">
-      <div class="connect-wrap">
-        <h2>連線至問卷後台</h2>
-        <p>輸入問卷系統的 GAS 網址後點選連線，系統會即時從 Google 試算表讀取五區所有回覆並自動計算統計。</p>
-        <div class="connect-row">
-          <input type="text" id="gasUrlInput" placeholder="https://script.google.com/macros/s/…/exec">
-          <button class="btn btn-primary" id="connectBtn" onclick="connect()">
-            <span id="connectSpinner" class="spinner hidden"></span>
-            <span id="connectBtnText">連線讀取</span>
-          </button>
-        </div>
-        <div id="diagArea"></div>
-      </div>
+    <div class="body-area" id="bodyArea">
+      <!-- JS injects screens here -->
     </div>
   </div>
-
-  <div id="dashPanel" class="hidden">
-    <div class="window">
-      <div class="titlebar">
-        <span class="label">總覽</span>
-        <div class="traffic"><span></span><span></span><span></span></div>
-      </div>
-      <div class="body-area">
-        <div class="refresh-row">
-          <div class="updated-at" id="updatedAt"></div>
-          <div style="display:flex;gap:8px;">
-            <button class="btn btn-gold btn-sm" onclick="exportDataJSON()">💾 匯出 JSON</button>
-            <button class="btn btn-teal btn-sm" onclick="refresh()">
-              <span id="refreshSpinner" class="spinner hidden"></span>
-              <span id="refreshText">重新整理</span>
-            </button>
-          </div>
-        </div>
-        <div class="summary-grid" id="summaryGrid"></div>
-      </div>
-    </div>
-
-    <div class="window">
-      <div class="titlebar">
-        <span class="label">場次篩選</span>
-        <div class="traffic"><span></span><span></span><span></span></div>
-      </div>
-      <div class="body-area" style="padding-top:18px;padding-bottom:18px;">
-        <div class="tab-row" id="tabRow"></div>
-      </div>
-    </div>
-
-    <div id="categoryWindows"></div>
-  </div>
-
 </div>
+
 <div class="footer-note">115 年度原住民族青年暑期工讀教育訓練　原住民族委員會</div>
 
 <script>
-/* ── CONFIG ── */
-const PRESET_GAS_URL = "https://script.google.com/macros/s/AKfycbxsvCUsVRhoI91U1_AAfipPCCvH09KnqjiSxnBWY74lGgIcUztZImqLagYMFnMoPxSKrA/exec";
+/* ====================================================================
+   ▼ CONFIG：依活動需要修改以下設定值 ▼
+   ==================================================================== */
 
-const SCALE_LABELS = ["非常滿意","滿意","普通","不滿意","非常不滿意"];
-const SCALE_COLORS = {5:"#076fb8",4:"#1FB6A6",3:"#F6C23E",2:"#F08A3C",1:"#E2222E"};
-const CATEGORIES = [
-  {title:"行政庶務與環境服務",subtitle:"就本次活動的行政安排進行評分"},
-  {title:"課程：原住民族政策",subtitle:""},
-  {title:"課程：公務經驗分享",subtitle:""},
-  {title:"部落參訪體驗",subtitle:""},
+const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbxsvCUsVRhoI91U1_AAfipPCCvH09KnqjiSxnBWY74lGgIcUztZImqLagYMFnMoPxSKrA/exec";
+
+// 五區 PIN 碼對應場次（PIN→場次名稱）
+// 場次名稱同時作為 GAS 後台的工作表名稱
+const PIN_MAP = {
+  "1629": "台東區：7/16(三)–7/17(四)",
+  "2021": "北區：7/20(日)–7/21(一)",
+  "2829": "宜花區：7/28(一)–7/29(二)",
+  "0607": "中區：8/6(三)–8/7(四)",
+  "1112": "南區：8/11(一)–8/12(二)",
+};
+
+// 五區地點資訊
+const VENUE_MAP_SV = {
+  "台東區：7/16(三)–7/17(四)": { hotel:"娜魯灣酒店", tribe:"達魯瑪克部落" },
+  "北區：7/20(日)–7/21(一)":   { hotel:"渴望會館", tribe:"復興區" },
+  "宜花區：7/28(一)–7/29(二)": { hotel:"花蓮福容飯店", tribe:"秀林鄉" },
+  "中區：8/6(三)–8/7(四)":     { hotel:"嘉義耐斯王子飯店", tribe:"達那伊谷" },
+  "南區：8/11(一)–8/12(二)":   { hotel:"屏東同合農科", tribe:"霧台鄉" },
+};
+
+/* ==================================================================== */
+
+/* ---------------- data model ---------------- */
+const SCALE = ["非常滿意","滿意","普通","不滿意","非常不滿意"];
+
+const SECTION4 = [
+  "活動事前聯繫","活動報到服務／場域指引","工作人員服務態度與協助","接駁交通安排",
+  "上課場域環境","餐點安排與口味","手冊與文宣品設計"
 ];
-const REDUCE_MOTION = window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+const SECTION5 = [
+  "課程期待程度","課程師資專業性","課程內容豐富性","課程時間安排","從中獲取專業知識"
+];
+const SECTION_CIVIL = [
+  "課程師資專業性","課程內容豐富性"
+];
+const SECTION6 = [
+  "部落參訪走讀","部落手作體驗","部落達人分享","議題分組討論及分享","體驗場域環境","部落餐食規劃","從中獲取專業知識"
+];
 
-let gasUrl = "";
-let lastData = null;
-let currentRegion = "overall";
+const IDENTITY_OPTIONS = ["高中職","大專院校","研究生"];
+const TRIBE_OPTIONS = [
+  "阿美族","排灣族","泰雅族","布農族","太魯閣族","卡那卡那富族","拉阿魯哇族","賽德克族",
+  "鄒族","卑南族","魯凱族","賽夏族","雅美族（達悟族）","邵族","噶瑪蘭族","撒奇萊雅族"
+];
+const IMPRESSION_OPTIONS = [
+  "原住民族政策課程","部落參訪走讀","部落手作體驗","部落達人分享",
+  "議題分組討論及分享","在地特色餐食安排","與工作人員或其他學員的互動交流"
+];
 
-/* ================= 連線 + 診斷 ================= */
-window.connect = async function(){
-  const input = document.getElementById("gasUrlInput").value.trim();
-  if(!input){ showDiag([{label:"請輸入 GAS 網址", state:"fail"}]); return; }
-  gasUrl = input;
-  setBusy("connect", true);
-  document.getElementById("diagArea").innerHTML = "";
-  await runDiagnosedFetch();
-  setBusy("connect", false);
+const state = {
+  step:0,
+  region:"",
+  identity:"",
+  tribe:"",
+  serviceArea:"",
+  r4:{}, r5:{}, rCivil:{}, r6:{},
+  impression:[], impressionOther:"",
+  feedback:"",
 };
 
-window.refresh = async function(){
-  if(!gasUrl) return;
-  setBusy("refresh", true);
-  await runDiagnosedFetch(true);
-  setBusy("refresh", false);
-};
+const totalDataSteps = 6; // step 1~6 shown in progress dots
 
-/* ================= 匯出 JSON（相容手動輸入版格式）================= */
-// 各分類題目數量，順序需與 survey_gas.gs 的 ALL_ITEMS 攤平順序一致：
-// 行政庶務(7) + 課程：原住民族政策(5) + 課程：公務經驗分享(2) + 部落參訪體驗(7) = 21題
-const CATEGORY_ITEM_COUNTS = [7, 5, 2, 7];
+/* ---------------- render helpers ---------------- */
+const bodyArea = document.getElementById("bodyArea");
 
-function buildItemKeys(){
-  const keys = [];
-  CATEGORY_ITEM_COUNTS.forEach((count, ci) => {
-    for(let ii=0; ii<count; ii++) keys.push(ci+"-"+ii);
-  });
-  return keys;
+function progressDots(activeIndex){
+  let html = '<div class="progress">';
+  for(let i=1;i<=totalDataSteps;i++){
+    let cls = "";
+    if(i < activeIndex) cls = "done";
+    else if(i === activeIndex) cls = "active";
+    html += `<i class="${cls}"></i>`;
+  }
+  html += '</div>';
+  return html;
 }
 
-function distToArray(dist){
-  // dist 是 {1:count,...,5:count}，轉成 [非常滿意,滿意,普通,不滿意,非常不滿意] 順序
-  return [5,4,3,2,1].map(s => Number((dist && dist[s]) || 0));
-}
-
-window.exportDataJSON = function(){
-  if(!lastData){ alert("尚未連線讀取資料，請先連線後再匯出。"); return; }
-
-  const keys = buildItemKeys();
-  const regions = lastData.regions || [];
-  const manualFormat = {};
-
-  regions.forEach(region => {
-    const rd = lastData.byRegion[region] || { count: 0, items: [] };
-    const counts = {};
-    (rd.items || []).forEach((item, idx) => {
-      const key = keys[idx];
-      if(key) counts[key] = distToArray(item.dist);
-    });
-    manualFormat[region] = { total: rd.count || 0, counts };
+function scaleRow(groupKey, item, idx){
+  const current = state[groupKey][idx];
+  let html = `<div class="scale-row">`;
+  SCALE.forEach((label, i)=>{
+    const v = 5 - i; // 非常滿意=5 ... 非常不滿意=1
+    const sel = current === v ? "sel" : "";
+    html += `<button type="button" class="scale-btn ${sel}" data-v="${v}" onclick="setRating('${groupKey}',${idx},${v})">${label}</button>`;
   });
-
-  const payload = {
-    _meta: {
-      source: "GAS連線版即時匯出",
-      exportedAt: new Date().toLocaleString("zh-TW",{hour12:false}),
-      gasUpdatedAt: lastData.updatedAt || "",
-      note: "此檔案可直接匯入「問卷分析後台_手動輸入版」繼續調整數字"
-    },
-    ...manualFormat
-  };
-
-  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "滿意度問卷資料_" + new Date().toISOString().slice(0,10) + ".json";
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-};
-
-async function runDiagnosedFetch(silentOnSuccess){
-  const steps = [];
-
-  // Step 1: URL format check
-  const formatOk = gasUrl.includes("script.google.com") && gasUrl.includes("/exec");
-  steps.push({ label: "網址格式檢查", state: formatOk ? "pass" : "fail",
-    detail: formatOk ? "" : "網址應包含 script.google.com 且以 /exec 結尾" });
-  if(!formatOk){ showDiag(steps); return; }
-
-  // Step 2: fetch
-  const sep = gasUrl.includes("?") ? "&" : "?";
-  const url = gasUrl + sep + "action=stats";
-  let res, rawText;
-  try{
-    res = await fetch(url);
-    steps.push({ label: "網路連線", state: "pass", detail: "HTTP " + res.status });
-  } catch(err){
-    steps.push({ label: "網路連線", state: "fail", detail: err.message });
-    steps.push({ label: "結果", state: "fail",
-      detail: "瀏覽器封鎖了這個跨網域請求（CORS / Network Error）。",
-      fix: "請確認：<br>1. 這份 HTML 檔案是否為<b>直接用瀏覽器開啟</b>（不是從聊天視窗 / 預覽面板內開啟）。"
-         + "<br>2. 網路連線是否正常。"
-         + "<br>3. 若以上皆正常，可能是 Google 帳號所屬的網域（Workspace）政策封鎖了外部存取，請洽網域管理員確認「Apps Script 對外部使用者開放」的設定。" });
-    showDiag(steps);
-    return;
-  }
-
-  // Step 3: read raw text
-  try{
-    rawText = await res.text();
-  } catch(err){
-    steps.push({ label: "讀取回應內容", state: "fail", detail: err.message });
-    showDiag(steps);
-    return;
-  }
-
-  // Step 4: detect if it's a Google login page (Workspace restriction) instead of JSON
-  const looksLikeLogin = /accounts\.google\.com|ServiceLogin|<html/i.test(rawText.slice(0, 300)) && !rawText.trim().startsWith("{");
-  if(looksLikeLogin){
-    steps.push({ label: "解析回應內容", state: "fail",
-      detail: "伺服器回傳的是網頁（HTML），不是預期的 JSON 資料。",
-      fix: "這通常代表 <b>Google 帳號所屬網域（Workspace）的管理政策</b>擋下了匿名／外部存取，"
-         + "即使部署設定選了「所有人」，網域管理員的政策仍可能強制要求登入。"
-         + "<br><br>可能的解法：<br>"
-         + "1. 請網域管理員至 Google admin console 開放「不受限的 Apps Script 網頁應用程式對外存取」。<br>"
-         + "2. 或改用<b>非公司網域的個人 Google 帳號</b>（如 @gmail.com）重新部署此 GAS 專案。<br>"
-         + "3. 部署時確認「以下列身分執行」為「我」、「誰可以存取」為「所有人」（這兩項你目前已經設定正確）。",
-      raw: rawText.slice(0, 400) });
-    showDiag(steps);
-    return;
-  }
-
-  // Step 5: try JSON parse
-  let data;
-  try{
-    data = JSON.parse(rawText);
-    steps.push({ label: "解析回應內容", state: "pass", detail: "成功解析 JSON" });
-  } catch(err){
-    steps.push({ label: "解析回應內容", state: "fail",
-      detail: "回應內容不是有效的 JSON 格式。",
-      fix: "請確認 GAS 程式碼是否為最新版本，且已重新部署（部署 → 管理部署作業 → 版本改為「新版本」）。",
-      raw: rawText.slice(0, 400) });
-    showDiag(steps);
-    return;
-  }
-
-  // Step 6: check success flag
-  if(!data.success){
-    steps.push({ label: "後台執行結果", state: "fail",
-      detail: "GAS 回傳錯誤：" + (data.error || "未知錯誤"),
-      fix: "請確認試算表 ID（SHEET_ID）是否正確填入 GAS 程式碼中，且該 Google 帳號有權限存取該試算表。" });
-    showDiag(steps);
-    return;
-  }
-
-  steps.push({ label: "資料讀取完成", state: "pass",
-    detail: "共讀取 " + (data.overall ? data.overall.count : 0) + " 筆回覆資料" });
-
-  if(!silentOnSuccess){
-    showDiag(steps);
-    await sleep(500);
-  }
-
-  lastData = data;
-  renderDash(data);
-  document.getElementById("connectPanel").classList.add("hidden");
-  document.getElementById("dashPanel").classList.remove("hidden");
-}
-
-function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
-
-function showDiag(steps){
-  const area = document.getElementById("diagArea");
-  const allPass = steps.every(s => s.state === "pass");
-  const lastFail = [...steps].reverse().find(s => s.state === "fail");
-
-  let html = `<div class="diag-box" style="border-color:${allPass ? 'var(--teal)' : 'var(--red)'}">
-    <h4>${allPass ? '✅ 連線診斷：全部通過' : '🔍 連線診斷'}</h4>`;
-
-  steps.forEach(s => {
-    const iconChar = s.state === "pass" ? "✓" : s.state === "fail" ? "✕" : "…";
-    html += `<div class="step">
-      <span class="icon ${s.state}">${iconChar}</span>
-      <div><div>${s.label}</div>${s.detail ? `<div class="detail">${s.detail}</div>` : ""}</div>
-    </div>`;
-  });
-
-  if(lastFail && lastFail.fix){
-    html += `<div class="fix">${lastFail.fix}</div>`;
-  }
-  if(lastFail && lastFail.raw){
-    html += `<div class="raw-snippet">${escHtml(lastFail.raw)}</div>`;
-  }
-
   html += `</div>`;
-  area.innerHTML = html;
+  return html;
 }
 
-/* ================= render ================= */
-function renderDash(data){
-  renderSummary(data);
-  renderTabs(data);
-  renderCategories(data, currentRegion);
-  document.getElementById("updatedAt").textContent = "資料更新時間：" + (data.updatedAt || "—");
+function ratingCard(groupKey, item, idx){
+  const missing = state[groupKey][idx] === undefined;
+  return `<div class="rating-card ${missing ? '' : ''}" id="${groupKey}-card-${idx}">
+    <div class="q">${item}</div>
+    ${scaleRow(groupKey, item, idx)}
+  </div>`;
 }
 
-function renderSummary(data){
-  const ov = data.overall || {};
-  const cnt = ov.count || 0;
-  const activeR = (data.regions||[]).filter(r=>data.byRegion[r]&&data.byRegion[r].count>0).length;
-  let avgPct = null;
-  if(ov.items && ov.items.length){
-    const valid = ov.items.filter(i=>i.pct!==null);
-    if(valid.length) avgPct = valid.reduce((a,i)=>a+i.pct,0)/valid.length;
-  }
-  document.getElementById("summaryGrid").innerHTML = `
-    <div class="stat-card"><div class="num blue" data-target="${cnt}" data-dec="0">0</div><div class="lbl">總回覆份數</div></div>
-    <div class="stat-card"><div class="num teal" data-target="${avgPct!==null?avgPct.toFixed(1):0}" data-dec="1" data-suf="%">${avgPct!==null?avgPct.toFixed(1):"—"}%</div><div class="lbl">整體平均滿意度</div></div>
-    <div class="stat-card"><div class="num pink" data-target="${activeR}" data-dec="0">0</div><div class="lbl">已有回覆場次</div></div>
-  `;
-  animateCountUps(document.getElementById("summaryGrid"));
-}
-
-function renderTabs(data){
-  const regions = data.regions || [];
-  const tabs = [{key:"overall",label:"全部場次"}].concat(
-    regions.map(r => ({key:r, label:r+" ("+(data.byRegion[r]?data.byRegion[r].count:0)+")"}))
-  );
-  document.getElementById("tabRow").innerHTML = tabs.map(t=>`
-    <button class="tab-btn ${currentRegion===t.key?'active':''}" onclick="switchTab('${t.key}')">${t.label}</button>
-  `).join("") + `<button class="tab-btn" style="background:var(--red);color:#fff;margin-left:auto;" onclick="exportReport('${currentRegion}')">⬇ 產出此場次報告</button>`;
-}
-
-window.switchTab = function(region){
-  currentRegion = region;
-  if(lastData) renderDash(lastData);
+window.setRating = function(groupKey, idx, v){
+  state[groupKey][idx] = v;
+  render();
 };
 
-function renderCategories(data, region){
-  const source = region === "overall" ? (data.overall||{}) : (data.byRegion[region]||{});
-  const items = source.items || [];
-  const count = source.count || 0;
+/* ---------------- screens ---------------- */
+function screenIntro(){
+  return `
+  <div class="hero">
+    <div class="kicker">115 年度原住民族青年暑期工讀教育訓練</div>
+    <img src="logo_暑工.svg" alt="原青 MASIAL！職感未來式" class="logo-img">
+    <div class="pin-region">${state.region}</div>
+    ${(()=>{ const v=VENUE_MAP_SV[state.region]; return v ? `<div class="venue-info-sv">🏨 ${v.hotel}　🌿 ${v.tribe}</div>` : ''; })()}
+    <p class="sub">感謝你參與本次活動！想聽聽你最真實的想法 — 你的回饋將成為下一屆活動進步的養分。<br>填答約需 3-5 分鐘，所有回答僅供活動檢討使用。</p>
+    <div class="badge-row">
+      <span class="pillchip pink">5 個步驟</span>
+      <span class="pillchip teal">約 3-5 分鐘</span>
+      <span class="pillchip gold">匿名填寫</span>
+    </div>
+    <button class="btn btn-start btn-wide" onclick="goStep(1)">開始填寫 →</button>
+  </div>`;
+}
 
-  if(!items.length){
-    document.getElementById("categoryWindows").innerHTML =
-      `<div class="window"><div class="body-area" style="text-align:center;color:#897f9c;padding:30px;">此場次尚無回覆資料</div></div>`;
+function screenStep1(){
+  return `
+  ${progressDots(1)}
+  <div class="step-eyebrow">STEP 1 / 5</div>
+  <h2 class="step-title">基本資料</h2>
+  <p class="step-desc">先讓我們認識你一下。</p>
+
+  <div class="field">
+    <span class="field-label">您的身分<span class="req">＊</span></span>
+    <div class="choice-grid">
+      ${IDENTITY_OPTIONS.map(opt=>`<button type="button" class="choice-btn ${state.identity===opt?'selected':''}" onclick="pickIdentity('${opt}')">${opt}</button>`).join("")}
+    </div>
+  </div>
+
+  <div class="field">
+    <span class="field-label">原住民族族別<span class="req">＊</span></span>
+    <select onchange="state.tribe=this.value; render();">
+      <option value="" ${state.tribe===""?"selected":""}>請選擇</option>
+      ${TRIBE_OPTIONS.map(t=>`<option value="${t}" ${state.tribe===t?"selected":""}>${t}</option>`).join("")}
+    </select>
+  </div>
+
+  <div class="field">
+    <span class="field-label">服務地區<span class="req">＊</span></span>
+    <div class="hint">提示範例：如台東縣金峰鄉</div>
+    <input type="text" placeholder="請輸入您的服務地區" value="${state.serviceArea}" oninput="state.serviceArea=this.value">
+  </div>
+
+  ${navRow(1)}
+  `;
+}
+
+function stepRatingScreen(stepNum, title, groupKey, items){
+  let cards = items.map((item,idx)=>ratingCard(groupKey,item,idx)).join("");
+  return `
+  ${progressDots(stepNum)}
+  <div class="step-eyebrow">STEP ${stepNum} / 5</div>
+  <h2 class="step-title">${title}</h2>
+  <p class="step-desc">請依照五點量表為以下項目評分。</p>
+  ${cards}
+  ${navRow(stepNum)}
+  `;
+}
+
+function screenStep6(){
+  return `
+  ${progressDots(5)}
+  <div class="step-eyebrow">STEP 5 / 5</div>
+  <h2 class="step-title">心聲與回饋</h2>
+  <p class="step-desc">最後幾句話，幫助我們把下一次辦得更好。</p>
+
+  <div class="field">
+    <span class="field-label">在這次活動中，讓您印象最深刻的是什麼？<span class="req">＊</span></span>
+    <div class="hint">可複選，若無符合選項亦可於「其他」自由填寫</div>
+    <div class="rating-card" style="padding:4px 10px;">
+      ${IMPRESSION_OPTIONS.map((opt,i)=>`
+        <div class="check-row">
+          <input type="checkbox" id="imp${i}" ${state.impression.includes(opt)?"checked":""} onchange="toggleImpression('${opt}')">
+          <label for="imp${i}">${opt}</label>
+        </div>`).join("")}
+      <div class="check-row" style="border-bottom:none;">
+        <input type="checkbox" id="impOther" ${state.impression.includes("其他")?"checked":""} onchange="toggleImpression('其他')">
+        <label for="impOther">其他：</label>
+      </div>
+      ${state.impression.includes("其他") ? `<div class="other-input show"><input type="text" placeholder="請輸入" value="${state.impressionOther}" oninput="state.impressionOther=this.value"></div>` : ""}
+    </div>
+  </div>
+
+  <div class="field">
+    <span class="field-label">對於活動整體流程或安排，您有什麼覺得可以改善的地方嗎？</span>
+    <div class="hint">選填</div>
+    <textarea placeholder="歡迎自由分享您的想法..." oninput="state.feedback=this.value">${state.feedback}</textarea>
+  </div>
+
+  <div id="errBox"></div>
+  ${navRow(6, true)}
+  `;
+}
+
+function screenSubmitting(){
+  return `<div class="success-wrap">
+    <div class="success-stamp"><span class="spinner" style="width:22px;height:22px;border-width:3px;"></span></div>
+    <h2>正在送出問卷...</h2>
+    <p>請稍候，馬上就好。</p>
+  </div>`;
+}
+
+function screenSuccess(){
+  return `<div class="success-wrap">
+    <div class="success-stamp">✓</div>
+    <h2>感謝您的填答！</h2>
+    <p>您的寶貴意見已成功送出，<br>祝福未來的路 masial（順利）！</p>
+    ${state.region ? `<div style="margin-top:10px;"><span class="pillchip pink" style="font-size:12px;">${state.region}</span></div>` : ""}
+  </div>`;
+}
+
+function screenError(msg){
+  return `<div class="success-wrap">
+    <div class="success-stamp" style="background:var(--red);">!</div>
+    <h2>送出時發生問題</h2>
+    <p>${msg || "請檢查網路連線後再試一次。"}</p>
+    <button class="btn btn-primary" style="margin-top:14px;" onclick="submitSurvey()">重新送出</button>
+  </div>`;
+}
+
+function navRow(stepNum, isLast){
+  return `
+  <div class="nav-row">
+    <button class="btn btn-ghost" onclick="goStep(${stepNum-1})">← 上一步</button>
+    ${isLast
+      ? `<button class="btn btn-primary" id="submitBtn" onclick="trySubmit()">送出問卷 ✓</button>`
+      : `<button class="btn btn-primary" onclick="tryNext(${stepNum})">下一步 →</button>`
+    }
+  </div>`;
+}
+
+/* ---------------- navigation / validation ---------------- */
+window.pickIdentity = function(opt){
+  state.identity = opt;
+  render();
+};
+window.toggleImpression = function(opt){
+  const i = state.impression.indexOf(opt);
+  if(i>-1) state.impression.splice(i,1);
+  else state.impression.push(opt);
+  render();
+};
+
+window.goStep = function(n){
+  state.step = n;
+  render();
+  window.scrollTo({top:0, behavior:"smooth"});
+};
+
+function validateStep1(){
+  if(!state.identity) return "請選擇您的身分";
+  if(!state.tribe) return "請選擇原住民族族別";
+  if(!state.serviceArea.trim()) return "請填寫服務地區";
+  return null;
+}
+function validateRatings(groupKey, items){
+  for(let i=0;i<items.length;i++){
+    if(state[groupKey][i] === undefined) return i;
+  }
+  return -1;
+}
+
+window.tryNext = function(stepNum){
+  if(stepNum===1){
+    const err = validateStep1();
+    if(err){ flashError(err); return; }
+  }
+  if(stepNum===2){
+    const missing = validateRatings("r4", SECTION4);
+    if(missing>-1){ flashMissing("r4", missing); return; }
+  }
+  if(stepNum===3){
+    const missing = validateRatings("r5", SECTION5);
+    if(missing>-1){ flashMissing("r5", missing); return; }
+  }
+  if(stepNum===4){
+    const missing = validateRatings("rCivil", SECTION_CIVIL);
+    if(missing>-1){ flashMissing("rCivil", missing); return; }
+  }
+  if(stepNum===5){
+    const missing = validateRatings("r6", SECTION6);
+    if(missing>-1){ flashMissing("r6", missing); return; }
+  }
+  goStep(stepNum+1);
+};
+
+window.trySubmit = function(){
+  if(state.impression.length===0){
+    document.getElementById("errBox").innerHTML = `<div class="error-msg">請至少選擇一項印象最深刻的選項</div>`;
     return;
   }
+  if(state.impression.includes("其他") && !state.impressionOther.trim()){
+    document.getElementById("errBox").innerHTML = `<div class="error-msg">請填寫「其他」的內容</div>`;
+    return;
+  }
+  submitSurvey();
+};
 
-  const byCategory = {};
-  items.forEach(item => {
-    if(!byCategory[item.category]) byCategory[item.category] = [];
-    byCategory[item.category].push(item);
+function flashError(msg){
+  let box = document.getElementById("inlineErr");
+  if(!box){
+    bodyArea.insertAdjacentHTML("beforeend", `<div class="error-msg" id="inlineErr"></div>`);
+    box = document.getElementById("inlineErr");
+  }
+  box.textContent = msg;
+  box.scrollIntoView({behavior:"smooth", block:"center"});
+}
+function flashMissing(groupKey, idx){
+  const card = document.getElementById(`${groupKey}-card-${idx}`);
+  if(card){
+    card.classList.add("missing");
+    card.scrollIntoView({behavior:"smooth", block:"center"});
+    setTimeout(()=>card.classList.remove("missing"), 1800);
+  }
+}
+
+/* ---------------- submit to GAS ---------------- */
+function buildPayload(){
+  const rows4 = {}, rows5 = {}, rowsCivil = {}, rows6 = {};
+  SECTION4.forEach((label,i)=>rows4[label]=state.r4[i]);
+  SECTION5.forEach((label,i)=>rows5[label]=state.r5[i]);
+  SECTION_CIVIL.forEach((label,i)=>rowsCivil[label]=state.rCivil[i]);
+  SECTION6.forEach((label,i)=>rows6[label]=state.r6[i]);
+  return {
+    timestamp: new Date().toISOString(),
+    region: state.region,
+    identity: state.identity,
+    tribe: state.tribe,
+    serviceArea: state.serviceArea,
+    section4_admin: rows4,
+    section5_policy: rows5,
+    section_civil: rowsCivil,
+    section6_tribal: rows6,
+    impression: state.impression.includes("其他")
+      ? state.impression.filter(o=>o!=="其他").concat(`其他：${state.impressionOther}`)
+      : state.impression,
+    feedback: state.feedback
+  };
+}
+
+window.submitSurvey = function(){
+  state.step = "submitting";
+  render();
+  const payload = buildPayload();
+
+  fetch(GAS_ENDPOINT, {
+    method:"POST",
+    mode:"no-cors", // Apps Script 預設不回傳 CORS 標頭，no-cors 可送出但讀不到回應內容
+    headers:{ "Content-Type":"text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  }).then(()=>{
+    state.step = "success";
+    render();
+  }).catch((err)=>{
+    state.step = "error";
+    state.errMsg = err.message;
+    render();
   });
+};
 
-  const wrap = document.getElementById("categoryWindows");
-  wrap.innerHTML = "";
+/* ---------------- master render ---------------- */
+function render(){
+  let html = "";
+  if(state.step === 0) html = screenIntro();
+  else if(state.step === 1) html = screenStep1();
+  else if(state.step === 2) html = stepRatingScreen(2, "行政庶務與環境服務", "r4", SECTION4);
+  else if(state.step === 3) html = stepRatingScreen(3, "課程：原住民族政策", "r5", SECTION5);
+  else if(state.step === 4) html = stepRatingScreen(4, "課程：公務經驗分享", "rCivil", SECTION_CIVIL);
+  else if(state.step === 5) html = stepRatingScreen(5, "部落參訪體驗", "r6", SECTION6);
+  else if(state.step === 6) html = screenStep6();
+  else if(state.step === "submitting") html = screenSubmitting();
+  else if(state.step === "success") html = screenSuccess();
+  else if(state.step === "error") html = screenError(state.errMsg);
+  bodyArea.innerHTML = html;
+}
 
-  CATEGORIES.forEach((cat, ci) => {
-    const catItems = byCategory[cat.title] || [];
-    const win = document.createElement("div");
-    win.className = "window";
-    win.innerHTML = `
-      <div class="titlebar">
-        <span class="label">${cat.title}</span>
-        <div class="traffic"><span></span><span></span><span></span></div>
-      </div>
-      <div class="body-area">
-        <div class="cat-head"><span class="idx">${ci+1}</span><h2>${cat.title}</h2></div>
-        ${cat.subtitle ? `<p style="font-size:12px;color:#897f9c;margin:0 0 14px 40px;">${cat.subtitle}</p>` : ""}
-        <div class="legend-row">
-          ${SCALE_LABELS.map((l,i)=>`<span><i style="background:${SCALE_COLORS[5-i]}"></i>${l}</span>`).join("")}
+/* ---------------- PIN 畫面（五區各自 PIN 碼）---------------- */
+function renderPinScreen(){
+  let pinInput = "";
+  const bodyArea = document.getElementById("bodyArea");
+
+  function draw(){
+    const regionLabel = pinInput.length === 4 ? (PIN_MAP[pinInput] || null) : null;
+    bodyArea.innerHTML = `
+      <div class="pin-wrap">
+        <img src="logo_暑工.svg" alt="" class="logo-img">
+        <h2>請輸入場次密碼</h2>
+        <p>請向現場工作人員索取您場次的四位數密碼</p>
+        <div class="pin-dots">
+          <span class="${pinInput.length>0?'filled':''}"></span>
+          <span class="${pinInput.length>1?'filled':''}"></span>
+          <span class="${pinInput.length>2?'filled':''}"></span>
+          <span class="${pinInput.length>3?'filled':''}"></span>
         </div>
-        <div class="items-host"></div>
+        <div class="pin-grid">
+          ${[1,2,3,4,5,6,7,8,9].map(n=>`<button class="pin-key" onclick="pinPress('${n}')">${n}</button>`).join('')}
+          <button class="pin-key del" onclick="pinDel()">⌫</button>
+          <button class="pin-key" onclick="pinPress('0')">0</button>
+          <button class="pin-key del" onclick="pinClear()" style="font-size:13px;">清除</button>
+        </div>
+        <div id="pinError" class="hidden pin-error">密碼錯誤，請重新輸入</div>
       </div>
     `;
-    const host = win.querySelector(".items-host");
+  }
 
-    catItems.forEach(item => {
-      const row = document.createElement("div");
-      row.className = "item-row";
-      const total = Object.values(item.dist).reduce((a,b)=>a+Number(b),0);
-      const segs = [5,4,3,2,1].map(s=>{
-        const w = total ? (Number(item.dist[s]||0)/total*100) : 0;
-        return w>0 ? `<div class="bar-seg" data-w="${w}" style="width:0%;background:${SCALE_COLORS[s]}" title="${SCALE_LABELS[5-s]} ${item.dist[s]}筆"></div>` : "";
-      }).join("");
-      const pctClass = item.pct===null ? "none" : item.pct>=85 ? "good" : item.pct>=70 ? "mid" : "bad";
-      const pctText = item.pct!==null ? item.pct.toFixed(1)+"%" : "—";
+  window.pinPress = function(digit){
+    if(pinInput.length >= 4) return;
+    pinInput += digit;
+    draw();
+    if(pinInput.length === 4) setTimeout(checkPin, 120);
+  };
+  window.pinDel = function(){
+    pinInput = pinInput.slice(0,-1); draw();
+  };
+  window.pinClear = function(){
+    pinInput = ""; draw();
+  };
 
-      row.innerHTML = `
-        <div class="item-top">
-          <span class="item-name">${item.label}</span>
-          <span class="item-pct ${pctClass}" ${item.pct!==null?`data-target="${item.pct.toFixed(1)}" data-dec="1" data-suf="%"`:""}>${pctText}</span>
-        </div>
-        <div class="bar-track">${segs}</div>
-        <div class="item-meta">平均分數 ${item.avg!==null?item.avg.toFixed(2):"—"} / 5　·　有效回覆 ${item.count} 筆　·　總份數 ${count}</div>
-      `;
-      host.appendChild(row);
-    });
+  function checkPin(){
+    const region = PIN_MAP[pinInput];
+    if(region){
+      state.region = region;
+      render(); // 進入問卷開場畫面
+    } else {
+      pinInput = "";
+      draw();
+      const err = document.getElementById("pinError");
+      err.classList.remove("hidden");
+      err.style.animation="none"; err.offsetHeight; err.style.animation="";
+      setTimeout(()=>err.classList.add("hidden"), 2000);
+    }
+  }
 
-    wrap.appendChild(win);
-    requestAnimationFrame(()=>{
-      win.querySelectorAll(".bar-seg[data-w]").forEach(seg=>{ seg.style.width = seg.dataset.w + "%"; });
-    });
+  draw();
+}
+
+/* ---------------- sparkle decorations ---------------- */
+function placeSparkles(){
+  const bg = document.getElementById("appBg");
+  const layer = document.createElement("div");
+  layer.className = "sparkle-layer";
+  layer.id = "sparkleLayer";
+  bg.appendChild(layer);
+
+  const positions = [
+    [4,10],[10,70],[88,18],[92,75],[50,4],[3,42],[95,46]
+  ];
+  positions.forEach(([x,y],i)=>{
+    const s = document.createElement("div");
+    s.className = "sparkle";
+    s.style.left = x+"%";
+    s.style.top = y+"%";
+    s.style.setProperty("--s", (0.6 + Math.random()*0.8).toFixed(2));
+    s.style.setProperty("--r", (Math.random()*30)+"deg");
+    s.style.animationDelay = (Math.random()*3)+"s";
+    layer.appendChild(s);
   });
 
-  animateCountUps(wrap);
-}
-
-/* ================= 報告產出 ================= */
-window.exportReport = function(region){
-  if(!lastData) return;
-  const source = region==="overall" ? lastData.overall : lastData.byRegion[region];
-  if(!source||!source.count){ alert("此場次尚無回覆資料"); return; }
-
-  const items = source.items||[];
-  const count = source.count;
-  const bycat = {};
-  items.forEach(it=>{ if(!bycat[it.category]) bycat[it.category]=[]; bycat[it.category].push(it); });
-  const regionLabel = region==="overall" ? "全部場次（五區合計）" : region;
-  const valid = items.filter(i=>i.pct!==null);
-  const avgPct = valid.length ? (valid.reduce((a,i)=>a+i.pct,0)/valid.length) : null;
-
-  function pctClass(p){ return p===null?"#b0a8c0":p>=85?"#1FB6A6":p>=70?"#F08A3C":"#E2222E"; }
-
-  function catSections(){
-    return CATEGORIES.map((cat,ci)=>{
-      const catItems=bycat[cat.title]||[];
-      const rows=catItems.map(it=>{
-        const total=it.count;
-        const w={};
-        [5,4,3,2,1].forEach(s=>{ w[s]=total?Math.round(Number(it.dist[s]||0)/total*1000)/10:0; });
-        return `
-        <div style="margin-bottom:18px;page-break-inside:avoid;">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;">
-            <span style="font-size:13px;font-weight:700;">${it.label}</span>
-            <span style="font-size:14px;font-weight:900;font-family:Arial;color:${pctClass(it.pct)};">${it.pct!==null?it.pct.toFixed(1)+"%":"—"}</span>
-          </div>
-          <div style="display:flex;height:22px;border-radius:5px;overflow:hidden;border:2px solid #15131A;">
-            ${[5,4,3,2,1].map(s=>w[s]>0?`<div style="width:${w[s]}%;background:${SCALE_COLORS[s]};-webkit-print-color-adjust:exact;print-color-adjust:exact;"></div>`:"").join("")}
-          </div>
-          <div style="font-size:10px;color:#897f9c;margin-top:3px;">
-            平均 ${it.avg!==null?it.avg.toFixed(2):"—"} / 5　·　有效回覆 ${it.count} 筆
-            　${[5,4,3,2,1].map(s=>`${SLABELS_local()[5-s]} ${it.dist[s]||0}`).join("　")}
-          </div>
-        </div>`;
-      }).join("");
-      return `
-      <div style="margin-top:28px;page-break-inside:avoid;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:6px;border-bottom:2.5px solid #076fb8;">
-          <div style="width:26px;height:26px;border-radius:50%;background:#F6C23E;border:2.5px solid #15131A;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;flex-shrink:0;">${ci+1}</div>
-          <h3 style="margin:0;font-size:15px;color:#076fb8;">${cat.title}</h3>
-          ${cat.subtitle?`<span style="font-size:11px;color:#897f9c;">（${cat.subtitle}）</span>`:""}
-        </div>
-        <div style="display:flex;gap:20px;font-size:10.5px;margin-bottom:12px;flex-wrap:wrap;">
-          ${SLABELS_local().map((l,i)=>`<span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:${SCALE_COLORS[5-i]};display:inline-block;border:1px solid #15131A;-webkit-print-color-adjust:exact;print-color-adjust:exact;"></span>${l}</span>`).join("")}
-        </div>
-        ${rows}
-      </div>`;
-    }).join("");
-  }
-  function SLABELS_local(){ return SCALE_LABELS; }
-
-  const now = new Date().toLocaleString("zh-TW",{hour12:false});
-  const html = `<!DOCTYPE html><html lang="zh-Hant"><head>
-<meta charset="UTF-8"><title>滿意度報告 — ${regionLabel}</title>
-<style>
-  @page{size:A4 portrait;margin:2.54cm 1.9cm 2.54cm 1.9cm;}
-  *{box-sizing:border-box;}
-  body{font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;color:#15131A;font-size:13px;line-height:1.6;margin:0;padding:0;}
-  @media print{.no-print{display:none!important;}body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
-</style></head><body>
-<div class="no-print" style="position:fixed;top:16px;right:16px;z-index:999;display:flex;gap:8px;">
-  <button onclick="window.print()" style="background:#076fb8;color:#fff;border:2.5px solid #15131A;border-radius:10px;padding:10px 20px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;box-shadow:3px 3px 0 #15131A;">列印 / 儲存 PDF</button>
-  <button onclick="window.close()" style="background:#fff;border:2.5px solid #15131A;border-radius:10px;padding:10px 16px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;box-shadow:3px 3px 0 #15131A;">關閉</button>
-</div>
-<div style="border:3px solid #15131A;border-radius:12px;padding:18px 22px;margin-bottom:24px;background:#FBF3EA;">
-  <div style="font-size:11.5px;color:#5a5468;margin-bottom:4px;">115年度原住民族青年暑期工讀教育訓練</div>
-  <div style="font-size:11.5px;color:#5a5468;margin-bottom:4px;">原青 MASIAL！職感未來式</div>
-  <div style="font-size:22px;font-weight:900;margin:4px 0 10px;">滿意度問卷分析報告</div>
-  <div style="display:flex;gap:16px;flex-wrap:wrap;">
-    <span style="background:#E2222E;color:#fff;border:2px solid #15131A;border-radius:999px;padding:4px 14px;font-size:12px;font-weight:700;">${regionLabel}</span>
-    <span style="font-size:12px;color:#5a5468;margin:auto 0;">回覆份數：<strong>${count}</strong>　·　整體平均滿意度：<strong style="color:${pctClass(avgPct)};">${avgPct!==null?avgPct.toFixed(1)+"%":"—"}</strong>　·　產出時間：${now}</span>
-  </div>
-</div>
-${catSections()}
-<div style="margin-top:32px;padding-top:10px;border-top:1.5px solid #e3d9cf;font-size:10px;color:#897f9c;display:flex;justify-content:space-between;">
-  <span>115年度原住民族青年暑期工讀教育訓練　原住民族委員會</span>
-  <span>本報告由滿意度問卷分析後台自動產出</span>
-</div>
-</body></html>`;
-
-  const w = window.open("","_blank","width=820,height=900");
-  w.document.write(html);
-  w.document.close();
-};
-
-/* ================= count-up ================= */
-function animateCountUps(scope){
-  scope.querySelectorAll("[data-target]").forEach(el=>{
-    const t=parseFloat(el.dataset.target), d=parseInt(el.dataset.dec||"0",10), s=el.dataset.suf||"";
-    if(isNaN(t)) return;
-    if(REDUCE_MOTION){ el.textContent=t.toFixed(d)+s; return; }
-    const dur=650, st=performance.now();
-    (function step(now){
-      const p=Math.min((now-st)/dur,1), e=1-Math.pow(1-p,3);
-      el.textContent=(t*e).toFixed(d)+s;
-      if(p<1) requestAnimationFrame(step); else el.textContent=t.toFixed(d)+s;
-    })(performance.now());
-  });
-}
-
-/* ================= helpers ================= */
-function escHtml(s){ const d=document.createElement("div"); d.textContent=s; return d.innerHTML; }
-function setBusy(which,on){
-  if(which==="connect"){
-    document.getElementById("connectBtn").disabled=on;
-    document.getElementById("connectBtnText").textContent=on?"讀取中...":"連線讀取";
-    document.getElementById("connectSpinner").classList.toggle("hidden",!on);
-  } else {
-    document.getElementById("refreshText").textContent=on?"更新中...":"重新整理";
-    document.getElementById("refreshSpinner").classList.toggle("hidden",!on);
-  }
-}
-
-/* ================= sparkle ================= */
-(function(){
-  const bg=document.getElementById("appBg"), layer=document.createElement("div");
-  layer.className="sparkle-layer"; bg.appendChild(layer);
-  [[4,8],[10,68],[88,14],[92,72],[50,3],[3,40],[95,44]].forEach(([x,y])=>{
-    const s=document.createElement("div"); s.className="sparkle";
-    s.style.left=x+"%"; s.style.top=y+"%";
-    s.style.setProperty("--s",(0.6+Math.random()*0.8).toFixed(2));
-    s.style.setProperty("--r",(Math.random()*30)+"deg");
-    s.style.animationDelay=(Math.random()*3)+"s"; layer.appendChild(s);
-  });
-  if(!REDUCE_MOTION && window.matchMedia("(pointer:fine)").matches){
-    document.addEventListener("mousemove",e=>{
-      const dx=(e.clientX/window.innerWidth-.5)*2, dy=(e.clientY/window.innerHeight-.5)*2;
-      layer.style.transform=`translate(${dx*12}px,${dy*12}px)`;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const finePointer = window.matchMedia("(pointer: fine)").matches;
+  if(!reduceMotion && finePointer){
+    document.addEventListener("mousemove", (e)=>{
+      const dx = (e.clientX / window.innerWidth - 0.5) * 2;
+      const dy = (e.clientY / window.innerHeight - 0.5) * 2;
+      layer.style.transform = `translate(${dx*12}px, ${dy*12}px)`;
     });
   }
-})();
-
-/* ================= init ================= */
-if(PRESET_GAS_URL){
-  document.getElementById("gasUrlInput").value = PRESET_GAS_URL;
 }
+
+placeSparkles();
+renderPinScreen();   // 開場顯示 PIN 畫面，不走 render()
 </script>
 </body>
 </html>
