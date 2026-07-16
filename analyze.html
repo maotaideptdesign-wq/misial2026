@@ -41,6 +41,7 @@
   .btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
   .btn-primary{background:var(--blue);color:#fff;}
   .btn-teal{background:var(--teal);color:#fff;}
+  .btn-gold{background:var(--gold);}
   .btn-sm{font-size:12.5px;padding:8px 14px;}
 
   .diag-box{background:#fff;border:3px solid var(--gold);border-radius:14px;padding:16px 18px;margin-top:16px;}
@@ -134,10 +135,13 @@
       <div class="body-area">
         <div class="refresh-row">
           <div class="updated-at" id="updatedAt"></div>
-          <button class="btn btn-teal btn-sm" onclick="refresh()">
-            <span id="refreshSpinner" class="spinner hidden"></span>
-            <span id="refreshText">重新整理</span>
-          </button>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-gold btn-sm" onclick="exportDataJSON()">💾 匯出 JSON</button>
+            <button class="btn btn-teal btn-sm" onclick="refresh()">
+              <span id="refreshSpinner" class="spinner hidden"></span>
+              <span id="refreshText">重新整理</span>
+            </button>
+          </div>
         </div>
         <div class="summary-grid" id="summaryGrid"></div>
       </div>
@@ -193,6 +197,60 @@ window.refresh = async function(){
   setBusy("refresh", true);
   await runDiagnosedFetch(true);
   setBusy("refresh", false);
+};
+
+/* ================= 匯出 JSON（相容手動輸入版格式）================= */
+// 各分類題目數量，順序需與 survey_gas.gs 的 ALL_ITEMS 攤平順序一致：
+// 行政庶務(7) + 課程：原住民族政策(5) + 課程：公務經驗分享(2) + 部落參訪體驗(7) = 21題
+const CATEGORY_ITEM_COUNTS = [7, 5, 2, 7];
+
+function buildItemKeys(){
+  const keys = [];
+  CATEGORY_ITEM_COUNTS.forEach((count, ci) => {
+    for(let ii=0; ii<count; ii++) keys.push(ci+"-"+ii);
+  });
+  return keys;
+}
+
+function distToArray(dist){
+  // dist 是 {1:count,...,5:count}，轉成 [非常滿意,滿意,普通,不滿意,非常不滿意] 順序
+  return [5,4,3,2,1].map(s => Number((dist && dist[s]) || 0));
+}
+
+window.exportDataJSON = function(){
+  if(!lastData){ alert("尚未連線讀取資料，請先連線後再匯出。"); return; }
+
+  const keys = buildItemKeys();
+  const regions = lastData.regions || [];
+  const manualFormat = {};
+
+  regions.forEach(region => {
+    const rd = lastData.byRegion[region] || { count: 0, items: [] };
+    const counts = {};
+    (rd.items || []).forEach((item, idx) => {
+      const key = keys[idx];
+      if(key) counts[key] = distToArray(item.dist);
+    });
+    manualFormat[region] = { total: rd.count || 0, counts };
+  });
+
+  const payload = {
+    _meta: {
+      source: "GAS連線版即時匯出",
+      exportedAt: new Date().toLocaleString("zh-TW",{hour12:false}),
+      gasUpdatedAt: lastData.updatedAt || "",
+      note: "此檔案可直接匯入「問卷分析後台_手動輸入版」繼續調整數字"
+    },
+    ...manualFormat
+  };
+
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "滿意度問卷資料_" + new Date().toISOString().slice(0,10) + ".json";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 };
 
 async function runDiagnosedFetch(silentOnSuccess){
