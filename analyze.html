@@ -76,6 +76,12 @@
   .cat-head{display:flex;align-items:baseline;gap:10px;margin:28px 0 4px;}
   .cat-head .idx{width:30px;height:30px;border:3px solid var(--ink);border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;flex-shrink:0;}
   .cat-head h2{font-size:18px;margin:0;}
+  .cat-avg-badge{margin-left:auto;display:inline-flex;align-items:baseline;gap:5px;border:2.5px solid var(--ink);border-radius:999px;padding:4px 14px;font-size:12px;font-weight:700;background:#fff;box-shadow:2px 2px 0 rgba(21,19,26,.15);}
+  .cat-avg-badge .val{font-size:16px;font-weight:900;font-family:"Archivo Black";}
+  .cat-avg-badge.good{background:var(--teal);color:#fff;}
+  .cat-avg-badge.mid{background:var(--orange);color:#fff;}
+  .cat-avg-badge.bad{background:var(--red);color:#fff;}
+  .cat-avg-badge.none{color:#b0a8c0;}
   .legend-row{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 14px 40px;font-size:11.5px;}
   .legend-row span{display:inline-flex;align-items:center;gap:5px;}
   .legend-row i{width:11px;height:11px;border-radius:3px;display:inline-block;border:1.5px solid var(--ink);}
@@ -433,6 +439,13 @@ function renderCategories(data, region){
 
   CATEGORIES.forEach((cat, ci) => {
     const catItems = byCategory[cat.title] || [];
+
+    // 計算此大項的平均滿意度（各題滿意度%的平均值）
+    const validPcts = catItems.map(i=>i.pct).filter(p=>p!==null);
+    const catAvgPct = validPcts.length ? validPcts.reduce((a,b)=>a+b,0)/validPcts.length : null;
+    const catAvgClass = catAvgPct===null ? "none" : catAvgPct>=85 ? "good" : catAvgPct>=70 ? "mid" : "bad";
+    const catAvgText = catAvgPct!==null ? catAvgPct.toFixed(1)+"%" : "—";
+
     const win = document.createElement("div");
     win.className = "window";
     win.innerHTML = `
@@ -441,7 +454,10 @@ function renderCategories(data, region){
         <div class="traffic"><span></span><span></span><span></span></div>
       </div>
       <div class="body-area">
-        <div class="cat-head"><span class="idx">${ci+1}</span><h2>${cat.title}</h2></div>
+        <div class="cat-head">
+          <span class="idx">${ci+1}</span><h2>${cat.title}</h2>
+          <span class="cat-avg-badge ${catAvgClass}">大項平均<span class="val">${catAvgText}</span></span>
+        </div>
         ${cat.subtitle ? `<p style="font-size:12px;color:#897f9c;margin:0 0 14px 40px;">${cat.subtitle}</p>` : ""}
         <div class="legend-row">
           ${SCALE_LABELS.map((l,i)=>`<span><i style="background:${SCALE_COLORS[5-i]}"></i>${l}</span>`).join("")}
@@ -501,6 +517,8 @@ window.exportReport = function(region){
   function catSections(){
     return CATEGORIES.map((cat,ci)=>{
       const catItems=bycat[cat.title]||[];
+      const validCatPcts = catItems.map(it=>it.pct).filter(p=>p!==null);
+      const catAvgPct = validCatPcts.length ? validCatPcts.reduce((a,b)=>a+b,0)/validCatPcts.length : null;
       const rows=catItems.map(it=>{
         const total=it.count;
         const w={};
@@ -526,6 +544,9 @@ window.exportReport = function(region){
           <div style="width:26px;height:26px;border-radius:50%;background:#F6C23E;border:2.5px solid #15131A;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;flex-shrink:0;">${ci+1}</div>
           <h3 style="margin:0;font-size:15px;color:#076fb8;">${cat.title}</h3>
           ${cat.subtitle?`<span style="font-size:11px;color:#897f9c;">（${cat.subtitle}）</span>`:""}
+          <span style="margin-left:auto;display:inline-flex;align-items:baseline;gap:5px;border:2px solid #15131A;border-radius:999px;padding:3px 12px;font-size:11px;font-weight:700;background:#fff;">
+            大項平均<span style="font-size:14px;font-weight:900;color:${pctClass(catAvgPct)};">${catAvgPct!==null?catAvgPct.toFixed(1)+"%":"—"}</span>
+          </span>
         </div>
         <div style="display:flex;gap:20px;font-size:10.5px;margin-bottom:12px;flex-wrap:wrap;">
           ${SLABELS_local().map((l,i)=>`<span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:${SCALE_COLORS[5-i]};display:inline-block;border:1px solid #15131A;-webkit-print-color-adjust:exact;print-color-adjust:exact;"></span>${l}</span>`).join("")}
